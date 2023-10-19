@@ -1,123 +1,95 @@
-// This is the service that powers the loader hooks.
-// It communicates over the MessageChannel that is created either in
-// the globalPreload hook or the import script.
-// The load and resolve hooks ask it for their return values.
+// Initialize the program in process.cwd, with the rootfiles
+// specified in the tsconfig.
+// This is slow! It is only done once per service instance.
 
-import { fileURLToPath, pathToFileURL } from 'node:url'
-import type { MessagePort } from 'node:worker_threads'
-import {info} from './debug.js'
-import fail from './fail.js'
-import { getTranspiledFileName } from './get-transpiled-filename.js'
-import { load } from './load.js'
-import { resolveModuleName } from './resolve-module-name.js'
-import {start} from './timing.js'
+import ts from 'typescript'
+import { error, info, trace } from './debug.js'
+import {
+  fileContents,
+  fileVersions,
+  incProjectVersion,
+  projectVersion,
+} from './file-versions.js'
+import {
+  getResolveModuleNameLiterals,
+  moduleResolutionCache,
+} from './resolve-module-name-literals.js'
+import { getResolveTypeReferenceDirectiveReferences } from './resolve-type-reference-directive-references.js'
+import {
+  directoryExists,
+  fileExists,
+  getCurrentDirectory,
+  getDirectories,
+  readFile,
+  realpath,
+} from './ts-sys-cached.js'
+import { tsconfig } from './tsconfig.js'
 
-export type ServiceLoadRequest = {
-  action: 'load'
-  url: string
-  id: string
-}
-export type ServiceResolveRequest = {
-  action: 'resolve'
-  url: string
-  parentURL: string
-  id: string
-}
-export type ServiceRequest =
-  | ServiceResolveRequest
-  | ServiceLoadRequest
+export const getLanguageService = () => {
+  const config = tsconfig()
 
-export type ServiceResponse = ServiceRequest & {
-  // undefined response means it's not something we're handling
-  response: string | undefined
-}
+  // spike script using a LanguageService host to do typechecking
+  const host: ts.LanguageServiceHost = {
+    readFile,
+    trace: config.options.tsTrace ? trace : undefined,
 
-export const isServiceRequest = (m: any): m is ServiceRequest =>
-  !!m &&
-  typeof m === 'object' &&
-  ((m.action === 'resolve' && typeof m.parentURL === 'string') ||
-    (m.action === 'load' && m.parentURL === undefined)) &&
-  typeof m.url === 'string' &&
-  typeof m.id === 'string'
+    directoryExists,
+    realpath,
+    getCurrentDirectory,
+    getDirectories,
+    fileExists: path => {
+      if (fileVersions.has(path)) return true
+      return fileExists(path)
+    },
+    writeFile: ts.sys.writeFile,
 
-export const isServiceResponse = (m: any): m is ServiceResponse =>
-  isServiceRequest(m) &&
-  Object.keys(m).includes('response') &&
-  (typeof (m as ServiceResponse).response === 'string' ||
-    typeof (m as ServiceResponse).response === 'undefined')
+    useCaseSensitiveFileNames: () => ts.sys.useCaseSensitiveFileNames,
 
-export class Service {
-  listen(port: MessagePort) {
-    const done = start('service: listen')
-    info('SERVICE LISTEN', port)
-    port.on('message', async msg => {
-      if (!isServiceRequest(msg)) return
-      // any throws should cause a crash elsewhere, fail just in case
-      /* c8 ignore start */
-      const r = await this.handle(msg).catch(e => fail(e.message))
-      /* c8 ignore stop */
-      const response = r === undefined ? undefined : r
-      const sr: ServiceResponse = { ...msg, response }
-      port.postMessage(sr)
-    })
-    port.ref = () => {
-      throw new Error('do not ref this')
-    }
-    port.unref()
-    done()
+    getCompilationSettings: () => config.options,
+    getNewLine: () => '\n',
+    getProjectVersion: projectVersion,
+    getScriptFileNames: () => [...fileVersions.keys()],
+    getScriptVersion: (fileName: string) =>
+      String(fileVersions.get(fileName)),
+    getScriptSnapshot: (
+      fileName: string
+    ): ts.IScriptSnapshot | undefined => {
+      let contents = fileContents.get(fileName)
+
+      // Read contents into TypeScript memory cache.
+      if (contents === undefined) {
+        contents = readFile(fileName)
+        if (contents === undefined) return
+
+        fileVersions.set(fileName, 1)
+        fileContents.set(fileName, contents)
+        incProjectVersion()
+      }
+
+      return ts.ScriptSnapshot.fromString(contents)
+    },
+    getDefaultLibFileName: opt => ts.getDefaultLibFilePath(opt),
+    log: (s: string) => info(s),
+    error: (s: string) => error(s),
   }
 
-  async handle(msg: ServiceRequest) {
-    return msg.action === 'resolve'
-      ? this.resolve(msg)
-      : this.load(msg)
-  }
-
-  async resolve(req: ServiceResolveRequest) {
-    const done = start('service: resolve')
-    const { url, parentURL } = req
-    const fileName = fileURLToPath(url)
-    const fromPath = fileURLToPath(parentURL)
-    info('SERVICE RESOLVE', {
-      url,
-      parentURL,
-      fileName,
-      fromPath,
-    })
-    // compile the code here, and then return the outFile path
-    const resolvedSource = resolveModuleName(fileName, fromPath)
-    info(resolvedSource)
-    if (
-      !resolvedSource?.resolvedModule ||
-      resolvedSource.resolvedModule.isExternalLibraryImport ||
-      resolvedSource.resolvedModule.extension === '.d.ts' ||
-      resolvedSource.resolvedModule.extension === '.js'
-    ) {
-      // not one of ours, or not something to be transpiled.
-      // XXX: should we do something with external modules if
-      // skipLibCheck is not true?
-      done()
-      return undefined
-    }
-
-    // compile now so it's cached and ready for the load coming next
-    const outFile = String(
-      pathToFileURL(
-        getTranspiledFileName(
-          resolvedSource.resolvedModule.resolvedFileName
-        )
-      )
+  host.resolveModuleNameLiterals = getResolveModuleNameLiterals(host)
+  host.resolveTypeReferenceDirectiveReferences =
+    getResolveTypeReferenceDirectiveReferences(
+      host,
+      moduleResolutionCache
     )
-    info('resolve', { url, outFile })
-    load(outFile)
-    done()
-    return outFile
-  }
 
-  async load({ url }: ServiceLoadRequest) {
-    const done = start('service: load')
-    const result = load(url)
-    done()
-    return result
-  }
+  Object.assign(host, {
+    getModuleResolutionCache: () => moduleResolutionCache,
+  })
+
+  const registry = ts.createDocumentRegistry(
+    ts.sys.useCaseSensitiveFileNames,
+    getCurrentDirectory()
+  )
+  const service = ts.createLanguageService(host, registry)
+
+  // take the hit up front loading reference types
+  return { initialProgram: service.getProgram(), service }
 }

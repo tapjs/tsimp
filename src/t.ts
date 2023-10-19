@@ -59,23 +59,23 @@ console.error(host.readFile(resolvedFileName))
 const program = ts.createProgram(['src/t.ts'], configOptions, host)
 const sf = program.getSourceFile('src/t.ts')
 console.error(program.getGlobalDiagnostics())
-console.log('sourceFile', sf)
+// console.log('sourceFile', sf)
 const emitResult = program.emit(sf)
-console.log(emitResult, compiledJS, sf)
-const tshy = ts.resolveModuleName(
-  'tshy',
-  resolve('src/x.ts'),
-  configOptions,
-  host,
-  // TODO: module resolution cache
-  host.getModuleResolutionCache?.(),
-  undefined,
-  ts.getImpliedNodeFormatForFile(
-    './src/x.ts' as ts.Path,
-    // TODO: package.json cache
-    undefined,
-    host,
-    configOptions
-  )
-)
-console.error(tshy)
+console.log(compiledJS)//, sf)
+// const tshy = ts.resolveModuleName(
+//   'tshy',
+//   resolve('src/x.ts'),
+//   configOptions,
+//   host,
+//   // TODO: module resolution cache
+//   host.getModuleResolutionCache?.(),
+//   undefined,
+//   ts.getImpliedNodeFormatForFile(
+//     './src/x.ts' as ts.Path,
+//     // TODO: package.json cache
+//     undefined,
+//     host,
+//     configOptions
+//   )
+// )
+//console.error(tshy)

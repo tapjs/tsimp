@@ -16,9 +16,9 @@ const startTimer = (name: string) => {
     didOnExitPrint = true
     process.on('beforeExit', () =>
       console.error(
-        Object.values(samples).sort(
-          ({ total: a }, { total: b }) => b - a
-        )
+        Object.values(samples)
+          .sort(({ total: a }, { total: b }) => b - a)
+          .filter(({ total }) => total >= 1)
       )
     )
   }

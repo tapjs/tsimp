@@ -11,6 +11,12 @@
   "type": "module",
   "exports": {
     "./package.json": "./package.json",
+    "./loader": {
+      "import": {
+        "types": "./dist/esm/legacy-loader.d.mts",
+        "default": "./dist/esm/legacy-loader.mjs"
+      }
+    },
     ".": {
       "import": {
         "types": "./dist/esm/index.d.ts",
@@ -36,6 +42,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.8.4",
+    "perfalize": "^1.0.1",
     "prettier": "^2.8.8",
     "ts-node": "^10.9.1",
     "tshy": "^1.4.0",
