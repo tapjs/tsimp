@@ -1,15 +1,19 @@
 // load the appropriate tsconfig.json file, and apply the tsimp
 // section overrides to it, if found.
+// This is designed to be called on demand. It will automatically reload
+// the config if the mtime of the located config file changes, and always
+// return the same object if it parses to the same values.
 import { statSync } from 'fs'
-import { dirname, resolve } from 'path'
+import { resolve } from 'path'
 import ts from 'typescript'
 import { walkUp } from 'walk-up-path'
-import { entryModule } from './entry-module.js'
 import fail from './fail.js'
+import { getCurrentDirectory, readFile } from './ts-sys-cached.js'
 
 const filename = process.env.TSIMP_PROJECT || 'tsconfig.json'
 
 let loadedConfig: ts.ParsedCommandLine
+let loadedConfigJSON: string
 
 // ms between checks to make sure the config hasn't changed.
 const STAT_FREQ = 100
@@ -17,8 +21,6 @@ let lastStat: number
 let mtime: number = -1
 let configPath: string
 
-// XXX it's a bit weird to make tsconfig walk up from the entryModule
-// if this is a long-lived service, then that will certainly change?
 export const tsconfig = () => {
   // reload the config when the file mtime changes.
   if (loadedConfig && configPath) {
@@ -35,9 +37,10 @@ export const tsconfig = () => {
       return loadedConfig
     }
   }
-  for (const dir of walkUp(dirname(entryModule()))) {
+
+  for (const dir of walkUp(getCurrentDirectory())) {
     configPath = resolve(dir, filename)
-    const readResult = ts.readConfigFile(configPath, ts.sys.readFile)
+    const readResult = ts.readConfigFile(configPath, readFile)
     const {
       error,
       config: { tsimp, ...config },
@@ -48,7 +51,8 @@ export const tsconfig = () => {
       fail('could not load config file', error)
     }
 
-    mtime = Number(statSync(configPath).mtime)
+    // will definitely have it, because we got a result
+    mtime = Number(readFile.mtimeCache.get(configPath))
     lastStat = performance.now()
 
     if (tsimp) applyOverrides(config, tsimp)
@@ -85,14 +89,17 @@ export const tsconfig = () => {
         },
       })
     )
-    return (loadedConfig = ts.parseJsonConfigFileContent(
-      res,
-      ts.sys,
-      dir
-    ))
+    const newConfig = ts.parseJsonConfigFileContent(res, ts.sys, dir)
+    const newConfigJSON = JSON.stringify(newConfig)
+    if (loadedConfig && newConfigJSON === loadedConfigJSON) {
+      // no changes, keep the old one
+      return loadedConfig
+    }
+    loadedConfigJSON = newConfigJSON
+    return (loadedConfig = newConfig)
   }
   throw fail(
-    `could not find config file named "${filename}", searching from "${entryModule()}"`
+    `could not find config file named "${filename}", searching from "${getCurrentDirectory()}"`
   )
 }
 

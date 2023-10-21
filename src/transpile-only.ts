@@ -17,7 +17,13 @@ export type NodeModuleEmitKind = 'nodeesm' | 'nodecjs'
 const createTranspileOnlyGetOutputFunction = (
   overrideModuleType?: ts.ModuleKind,
   nodeModuleEmitKind?: NodeModuleEmitKind
-): ((code: string, fileName: string) => string | undefined) => {
+): ((
+  code: string,
+  fileName: string
+) => {
+  outputText: string | undefined
+  diagnostics: ts.Diagnostic[]
+}) => {
   const compilerOptions = { ...config.options }
   if (overrideModuleType !== undefined)
     compilerOptions.module = overrideModuleType
@@ -27,7 +33,7 @@ const createTranspileOnlyGetOutputFunction = (
     reportDiagnostics: true,
   })
 
-  return (code: string, fileName: string): string | undefined => {
+  return (code: string, fileName: string) => {
     let result: ts.TranspileOutput
     result = tsTranspileModule(
       code,
@@ -44,7 +50,9 @@ const createTranspileOnlyGetOutputFunction = (
     if (result.diagnostics?.length)
       result.diagnostics.forEach(d => report(d))
 
-    return result.outputText
+    const { outputText, diagnostics = [] } = result
+
+    return { outputText, diagnostics }
   }
 }
 

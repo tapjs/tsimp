@@ -35,6 +35,7 @@
     "mkdirp": "^3.0.1",
     "pirates": "^4.0.6",
     "rimraf": "^5.0.5",
+    "signal-exit": "^4.1.0",
     "walk-up-path": "^3.0.1"
   },
   "peerDependencies": {

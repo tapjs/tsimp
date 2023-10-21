@@ -1,3 +1,6 @@
+import { statSync } from 'fs'
+import { catcher } from './catcher.js'
+
 // cache an arbitrary function of arity 0 or 1
 export function cached<R>(
   fn: () => R
@@ -20,5 +23,36 @@ export function cached<A, R>(
       return r
     },
     { cache }
+  )
+}
+
+// some fs ops need to cache-bust when file changes
+// only use when stat is faster than whatever it's doing.
+export function cachedMtime<R>(
+  fn: (path: string) => R,
+  statFreqMs: number = 10
+): ((path: string) => R) & {
+  mtimeCache: Map<string, number>
+  cache: Map<string, R>
+} {
+  let lastStat = -1 * statFreqMs
+  const mtimeCache = new Map<string, number>()
+  const cfn = cached(fn)
+  const { cache } = cfn
+  return Object.assign(
+    (path: string) => {
+      if (performance.now() - lastStat > statFreqMs) {
+        const m = catcher(() => Number(statSync(path).mtime))
+        if (typeof m === 'number') {
+          const cm = mtimeCache.get(path)
+          if (cm && m !== cm) cache.delete(path)
+          mtimeCache.set(path, m)
+        } else {
+          mtimeCache.delete(path)
+        }
+      }
+      return cfn(path)
+    },
+    { mtimeCache, cache }
   )
 }

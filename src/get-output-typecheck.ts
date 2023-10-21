@@ -1,8 +1,8 @@
 // Get output with full type-checking from the LanguageService.
 
 import { relative } from 'path'
+import type ts from 'typescript'
 import { info, warn } from './debug.js'
-import { report } from './diagnostic.js'
 import { updateMemoryCache } from './resolve-module-name-literals.js'
 import { getLanguageService } from './service.js'
 import { getCurrentDirectory } from './ts-sys-cached.js'
@@ -10,7 +10,10 @@ import { getCurrentDirectory } from './ts-sys-cached.js'
 export const getOutputTypeCheck = (
   code: string,
   fileName: string
-): string | undefined => {
+): {
+  outputText: string | undefined
+  diagnostics: ts.Diagnostic[]
+} => {
   const { service, initialProgram } = getLanguageService()
   const cwd = getCurrentDirectory()
   updateMemoryCache(code, fileName)
@@ -34,10 +37,8 @@ export const getOutputTypeCheck = (
     warn(`service.program changed while compiling ${fileName}`)
   }
 
-  if (diagnostics.length) diagnostics.forEach(d => report(d))
-
   if (output.emitSkipped) {
-    return undefined
+    return { outputText: undefined, diagnostics }
   }
 
   // Throw an error when requiring `.d.ts` files.
@@ -50,5 +51,5 @@ export const getOutputTypeCheck = (
     )
   }
 
-  return output.outputFiles[0]?.text
+  return { outputText: output.outputFiles[0]?.text, diagnostics }
 }

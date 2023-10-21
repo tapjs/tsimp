@@ -1,8 +1,8 @@
 import { realpathSync } from 'fs'
 import ts from 'typescript'
-import { cached } from './cached.js'
+import { cached, cachedMtime } from './cached.js'
 
-export const readFile = cached(ts.sys.readFile)
+export const readFile = cachedMtime(ts.sys.readFile)
 export const directoryExists = cached(ts.sys.directoryExists)
 export const realpath = cached(
   /* c8 ignore start */

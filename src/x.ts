@@ -1,6 +1,6 @@
-// //console.log(process.whatever)
-// type Foo = {
-//   bar: string
-// }
-// const foo: Foo = { baz: true }
+type Foo = {
+  bar: string
+}
+const foo: Foo = { bar: 'true' }
+console.log(foo)
 export {}
