@@ -1,5 +1,5 @@
 // @ts-ignore - not in @types/node, but it is there
-process?.setSourceMapsEnabled?.(true)
+// process?.setSourceMapsEnabled?.(true)
 
 import { resolve } from 'path'
 import ts from 'typescript'

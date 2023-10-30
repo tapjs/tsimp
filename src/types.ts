@@ -1,20 +1,58 @@
-import type { Diagnostic } from 'typescript'
+import { MessageBase } from 'sock-daemon'
 
 export type ReadyState = 'ALREADY RUNNING' | 'READY'
 
-export type Request = [
-  id: string,
-  fileName: string,
-  typeCheck: boolean
-]
+export type Action = 'resolve' | 'compile' | 'preload'
 
-export type Response = [
-  id: string,
-  outputText: string,
-  diagnostics: Diagnostic[]
-]
+export type PreloadRequest = {}
+export type PreloadResult = {}
+
+export type ServicePreloadRequest = MessageBase &
+  PreloadRequest & {
+    action: 'preload'
+  }
+
+export type CompileRequest = {
+  fileName: string
+  typeCheck: boolean
+  pretty?: boolean
+}
+
+export type ServiceCompileRequest = MessageBase &
+  CompileRequest & {
+    action: 'compile'
+  }
 
 export type CompileResult = {
-  outputText: string
-  diagnostics: Diagnostic[]
+  fileName?: string
+  diagnostics: string[]
 }
+export type ServiceCompileResult = MessageBase &
+  CompileResult & {
+    action: 'compile'
+  }
+
+export type ResolveRequest = {
+  url: string
+  parentURL?: string
+}
+export type ServiceResolveRequest = MessageBase &
+  ResolveRequest & {
+    action: 'resolve'
+  }
+
+export type ResolveResult = {
+  fileName?: string
+}
+export type ServiceResolveResult = MessageBase &
+  ResolveResult & {
+    action: 'resolve'
+  }
+
+export type ServiceRequest =
+  | ServiceCompileRequest
+  | ServiceResolveRequest
+
+export type ServiceResult =
+  | ServiceCompileRequest
+  | ServiceResolveRequest

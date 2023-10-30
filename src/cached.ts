@@ -34,25 +34,30 @@ export function cachedMtime<R>(
 ): ((path: string) => R) & {
   mtimeCache: Map<string, number>
   cache: Map<string, R>
+  getMtime: (path: string) => number | undefined
 } {
   let lastStat = -1 * statFreqMs
   const mtimeCache = new Map<string, number>()
   const cfn = cached(fn)
   const { cache } = cfn
+  const getMtime = (path: string) => {
+    if (performance.now() - lastStat > statFreqMs) {
+      const m = catcher(() => Number(statSync(path).mtime))
+      if (typeof m === 'number') {
+        const cm = mtimeCache.get(path)
+        if (cm && m !== cm) cache.delete(path)
+        mtimeCache.set(path, m)
+      } else {
+        mtimeCache.delete(path)
+      }
+    }
+    return mtimeCache.get(path)
+  }
   return Object.assign(
     (path: string) => {
-      if (performance.now() - lastStat > statFreqMs) {
-        const m = catcher(() => Number(statSync(path).mtime))
-        if (typeof m === 'number') {
-          const cm = mtimeCache.get(path)
-          if (cm && m !== cm) cache.delete(path)
-          mtimeCache.set(path, m)
-        } else {
-          mtimeCache.delete(path)
-        }
-      }
+      getMtime(path)
       return cfn(path)
     },
-    { mtimeCache, cache }
+    { mtimeCache, cache, getMtime }
   )
 }

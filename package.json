@@ -5,6 +5,7 @@
     "exports": {
       "./package.json": "./package.json",
       "./loader": "./src/legacy-loader.mts",
+      "./import": "./src/import.mts",
       ".": "./src/index.ts"
     }
   },
@@ -15,6 +16,12 @@
       "import": {
         "types": "./dist/esm/legacy-loader.d.mts",
         "default": "./dist/esm/legacy-loader.mjs"
+      }
+    },
+    "./import": {
+      "import": {
+        "types": "./dist/esm/import.d.mts",
+        "default": "./dist/esm/import.mjs"
       }
     },
     ".": {
@@ -32,10 +39,12 @@
     "prepare": "tshy"
   },
   "dependencies": {
+    "foreground-child": "^3.1.1",
     "mkdirp": "^3.0.1",
     "pirates": "^4.0.6",
     "rimraf": "^5.0.5",
     "signal-exit": "^4.1.0",
+    "sock-daemon": "1.3",
     "walk-up-path": "^3.0.1"
   },
   "peerDependencies": {

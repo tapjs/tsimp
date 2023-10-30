@@ -1,8 +1,7 @@
 // @ts-ignore - not in @types/node, but it is there
-process?.setSourceMapsEnabled?.(true)
+// process?.setSourceMapsEnabled?.(true)
 
 import { readFileSync, realpathSync, writeFileSync } from 'fs'
-import { mkdirpSync } from 'mkdirp'
 import { relative, resolve } from 'path'
 import { enable, perfalize, perfalizeFn } from 'perfalize'
 import ts from 'typescript'
@@ -38,36 +37,36 @@ let pjInfoCache:
       entries: () => [string, any][]
     })
   | undefined = undefined
-try {
-  const d = perfalize('read serialized module resolution cache')
-  mkdirpSync('node_modules/.cache/tsimp')
-  let cache = deserialize(
-    readFileSync('node_modules/.cache/tsimp/module-resolution-cache')
-  )
-  if (cache) {
-    pjInfoCache = {
-      clear: () => {
-        cache = new Map<string, any>()
-      },
-      getInternalMap: () => cache,
-      getPackageJsonInfo(packageJsonPath: string) {
-        return cache.get(
-          getCanonicalFileName(resolve(cwd, packageJsonPath))
-        )
-      },
-      setPackageJsonInfo(packageJsonPath: string, info: any) {
-        cache.set(
-          getCanonicalFileName(resolve(cwd, packageJsonPath)),
-          info
-        )
-      },
-      entries() {
-        return [...cache.entries()]
-      },
-    }
-  }
-  d()
-} catch {}
+// try {
+//   const d = perfalize('read serialized module resolution cache')
+//   mkdirpSync('node_modules/.cache/tsimp')
+//   let cache = deserialize(
+//     readFileSync('node_modules/.cache/tsimp/module-resolution-cache')
+//   )
+//   if (cache) {
+//     pjInfoCache = {
+//       clear: () => {
+//         cache = new Map<string, any>()
+//       },
+//       getInternalMap: () => cache,
+//       getPackageJsonInfo(packageJsonPath: string) {
+//         return cache.get(
+//           getCanonicalFileName(resolve(cwd, packageJsonPath))
+//         )
+//       },
+//       setPackageJsonInfo(packageJsonPath: string, info: any) {
+//         cache.set(
+//           getCanonicalFileName(resolve(cwd, packageJsonPath)),
+//           info
+//         )
+//       },
+//       entries() {
+//         return [...cache.entries()]
+//       },
+//     }
+//   }
+//   d()
+// } catch {}
 
 const moduleResolutionCache = ts.createModuleResolutionCache(
   cwd,
@@ -314,14 +313,14 @@ const resolveModuleNameLiterals: (
   _reusedNames
 ) => {
   // moduleLiterals[n].text is the equivalent to moduleName string
-  // console.error('resoleModuleNameLiterals', {
-  //   moduleLiterals,
-  //   containingFile,
-  //   redirectedReference,
-  //   options,
-  //   containingSourceFile,
-  //   reusedNames,
-  // })
+  console.error('resoleModuleNameLiterals', {
+    moduleLiterals,
+    containingFile,
+    redirectedReference,
+    options,
+    containingSourceFile,
+    _reusedNames,
+  })
   return moduleLiterals.map((moduleLiteral, i) => {
     const moduleName = moduleLiteral.text
     const mode = containingSourceFile
@@ -347,6 +346,7 @@ const resolveModuleNameLiterals: (
       redirectedReference,
       mode
     )
+    console.error('resolvedModule', moduleName, resolvedModule)
     d()
     if (!resolvedModule && options.experimentalTsImportSpecifiers) {
       const lastDotIndex = moduleName.lastIndexOf('.')
@@ -475,7 +475,6 @@ const getOutput = (
     info('compiler rebuilt Program', fileName)
   }
   progBeforeDone()
-
   const outputDone = perfalize('getEmitOutput')
   const output = service.getEmitOutput(fileName)
   outputDone()

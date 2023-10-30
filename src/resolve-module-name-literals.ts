@@ -15,11 +15,12 @@ const config = tsconfig()
 export const moduleResolutionCache = ts.createModuleResolutionCache(
   getCurrentDirectory(),
   getCanonicalFileName,
-  config.options
+  config.options,
+  undefined
 )
 
 const knownInternalFilenames = new Set<string>()
-const internalBuckets = new Set<string>()
+const internalBuckets = new Set<string>([''])
 const moduleBucketRe = /.*\/node_modules\/(?:@[^\/]+\/)?[^\/]+\//
 const getModuleBucket = (filename: string) => {
   const find = moduleBucketRe.exec(filename)
@@ -28,7 +29,7 @@ const getModuleBucket = (filename: string) => {
 }
 const markBucketOfFilenameInternal = (filename: string) =>
   internalBuckets.add(getModuleBucket(filename))
-const isFileInInternalBucket = (filename: string) =>
+export const isFileInInternalBucket = (filename: string) =>
   internalBuckets.has(getModuleBucket(filename))
 const isFileKnownToBeInternal = (filename: string) =>
   knownInternalFilenames.has(filename)
@@ -69,7 +70,10 @@ const tsResolverEquivalents = new Map<string, readonly string[]>([
 
 export const getResolveModuleNameLiterals = (
   host: ts.LanguageServiceHost
-): ts.LanguageServiceHost['resolveModuleNameLiterals'] => {
+): Exclude<
+  ts.LanguageServiceHost['resolveModuleNameLiterals'],
+  undefined
+> => {
   const resolveModuleNameLiterals: (
     moduleLiterals: readonly ts.StringLiteralLike[],
     containingFile: string,
@@ -86,14 +90,6 @@ export const getResolveModuleNameLiterals = (
     _reusedNames
   ) => {
     // moduleLiterals[n].text is the equivalent to moduleName string
-    // console.error('resoleModuleNameLiterals', {
-    //   moduleLiterals,
-    //   containingFile,
-    //   redirectedReference,
-    //   options,
-    //   containingSourceFile,
-    //   reusedNames,
-    // })
     return moduleLiterals.map((moduleLiteral, i) => {
       const moduleName = moduleLiteral.text
       const mode = containingSourceFile
@@ -112,13 +108,13 @@ export const getResolveModuleNameLiterals = (
       let { resolvedModule } = ts.resolveModuleName(
         moduleName,
         containingFile,
-        config.options,
+        options,
         host,
         moduleResolutionCache,
         redirectedReference,
         mode
       )
-      if (!resolvedModule && options.experimentalTsImportSpecifiers) {
+      if (!resolvedModule) {
         const lastDotIndex = moduleName.lastIndexOf('.')
         const ext =
           lastDotIndex >= 0 ? moduleName.slice(lastDotIndex) : ''
@@ -128,7 +124,7 @@ export const getResolveModuleNameLiterals = (
             ;({ resolvedModule } = ts.resolveModuleName(
               moduleName.slice(0, -ext.length) + replacementExt,
               containingFile,
-              config.options,
+              options,
               host,
               moduleResolutionCache,
               redirectedReference,

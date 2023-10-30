@@ -1,8 +1,8 @@
-import ts from 'typescript'
+import type { ResolutionMode } from 'typescript'
 
 export function createModeAwareCacheKey(
   specifier: string,
-  mode: ts.ResolutionMode
+  mode: ResolutionMode
 ) {
   return mode === undefined ? specifier : `${mode}|${specifier}`
 }

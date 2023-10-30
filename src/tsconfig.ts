@@ -73,7 +73,7 @@ export const tsconfig = () => {
           strict: true,
           forceConsistentCasingInFileNames: true,
           // defaults that ts uses when transpiling
-          jsx: ts.JsxEmit.Preserve,
+          jsx: 1, // ts.JsxEmit.Preserve
         },
       },
       applyOverrides(tsimp ? applyOverrides(config, tsimp) : config, {
@@ -95,6 +95,7 @@ export const tsconfig = () => {
       // no changes, keep the old one
       return loadedConfig
     }
+    newConfig.options.configFilePath = configPath
     loadedConfigJSON = newConfigJSON
     return (loadedConfig = newConfig)
   }

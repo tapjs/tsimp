@@ -1,4 +1,4 @@
-# tsimp
+# tsimp 😈
 
 A TypeScript Import loader for Node.js
 
@@ -8,10 +8,15 @@ This is an importer that runs Node.js programs written in
 TypeScript, using the official TypeScript implementation from
 Microsoft.
 
+It is designed to support full typechecking support, with
+acceptable performance when used repeatedly (for example, in a
+test suite which spawns many TS processes).
+
 ## Why Is It
 
-There are quite a few TypeScript compilers available! Which one
-should you choose, and why did I need to create this one?
+There are quite a few TypeScript loaders and compilers available!
+Which one should you choose, and why did I need to create this
+one?
 
 - [swc](https://swc.rs) is a TypeScript compiler implementation
   in Rust
@@ -33,9 +38,10 @@ How this differs:
 - It supports the `--import` and `Module.register()` behavior
   added in node v20.6, only falling back to warning-laden
   experimental APIs when that's not available.
-- Type checking is disabled by default for performance reasons,
-  but can be turned on, so no need to run an extra `tsc --noEmit`
-  step after running tests.
+- Type checking is enabled by default, so no need to run an extra
+  `tsc --noEmit` step after running tests, using a persistent
+  `LanguageService` daemon and a ridiculous amount of caching to
+  make it performant.
 - It's just a module loader, not a bunch of other things. So
   there's no repl, no bundler, etc. It's not a lot of code
   (unless you count TypeScript itself, which to be fair, is kind
@@ -53,7 +59,7 @@ npm install tsimp
 Run TypeScript programs like this in node v20.6 and higher:
 
 ```
-node --import=tsimp my-typescript-program.ts
+node --import=tsimp/import my-typescript-program.ts
 ```
 
 Or like this in Node versions prior to v20.6:
@@ -62,11 +68,18 @@ Or like this in Node versions prior to v20.6:
 node --loader=tsimp/loader my-typescript-program.ts
 ```
 
-Or you can use `tsimp` as the executable to run your program:
+Or you can use `tsimp` as the executable to run your program (but
+the import/loader is ~100ms faster because it doesn't incur an
+extra `spawn` call):
 
 ```
 tsimp my-typescript-program.ts
 ```
+
+Note that while `tsimp` run without any arguments will start the
+Node repl, and in that context it will be able to import/require
+typescript modules, it does _not_ include a repl that can run
+TypeScript directly. This is just an import loader.
 
 In Node v20.6 and higher, you can also load `tsimp` in your
 program, and from that point forward, TypeScript modules will

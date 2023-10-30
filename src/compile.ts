@@ -4,7 +4,6 @@
 // This is not cached, it is cached at the load() level based on config
 // and file change time.
 
-import { resolve } from 'node:path'
 import ts from 'typescript'
 import { getOutputTypeCheck } from './get-output-typecheck.js'
 import {
@@ -82,28 +81,4 @@ export const compile = (
   }
 
   return { outputText, diagnostics }
-}
-
-import { enable, perfalize } from 'perfalize'
-if (process.env.SMOKE_TEST_COMPILE === '1') {
-  enable({ minimum: 0 })
-  for (const i of [1, 2, 3, 4]) {
-    for (const to of [true, false]) {
-      const d = perfalize(`compile transpileOnly=${to} i=${i}`)
-      console.error(
-        `compile transpileOnly=${to} i=${i}`,
-        compile(
-          `
-type Foo = { bar: 1 }
-console.log({ bar: '1' } as Foo)
-;(process as NodeJS.Process & { blahDeeBloo?: boolean }).blahDeeBloo = true
-//export type M = Map<string, any>
-`,
-          resolve('./some-file.ts'),
-          to
-        )
-      )
-      d()
-    }
-  }
 }

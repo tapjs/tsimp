@@ -1,6 +1,6 @@
 import ts from 'typescript'
-import { getCanonicalFileName } from './get-canonical-filename.js'
 import { createModeAwareCacheKey } from './create-mode-aware-cache-key.js'
+import { getCanonicalFileName } from './get-canonical-filename.js'
 import { getCurrentDirectory } from './ts-sys-cached.js'
 import { tsconfig } from './tsconfig.js'
 

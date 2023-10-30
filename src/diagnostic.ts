@@ -1,10 +1,23 @@
-import ts from 'typescript'
+import ts, { type Diagnostic } from 'typescript'
+import { getCanonicalFileName } from './get-canonical-filename.js'
+
+const cwd = process.cwd()
+
+export const reportAll = (
+  diagnostics: Diagnostic[],
+  pretty?: boolean
+) => diagnostics.map(d => report(d, pretty))
+
+const host = {
+  getCurrentDirectory: () => cwd,
+  getNewLine: () => '\n',
+  getCanonicalFileName,
+}
 
 export const report = (
-  ts as typeof ts & {
-    createDiagnosticReporter: (
-      system: ts.System,
-      pretty?: boolean
-    ) => ts.DiagnosticReporter
-  }
-).createDiagnosticReporter(ts.sys, process.stderr.isTTY)
+  diagnostic: Diagnostic,
+  pretty = process.stderr.isTTY
+): string =>
+  pretty
+    ? ts.formatDiagnosticsWithColorAndContext([diagnostic], host)
+    : ts.formatDiagnostic(diagnostic, host)
