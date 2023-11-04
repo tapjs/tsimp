@@ -8,7 +8,7 @@ import type {
 import { resolve as pathResolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'url'
 import { MessagePort } from 'worker_threads'
-import { DaemonClient } from './client.js'
+import { DaemonClient } from '../client.js'
 
 const typeCheck = process.env.TSIMP_TRANSPILE_ONLY !== '1'
 const client = new DaemonClient()

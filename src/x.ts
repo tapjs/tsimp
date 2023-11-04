@@ -6,4 +6,4 @@ type Foo = {
 const foo: Foo = { bar: 'true' }
 console.log(foo)
 export {}
-console.log("ok")
+console.log('ok')

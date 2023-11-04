@@ -13,7 +13,7 @@ import {
 } from './types.js'
 
 export const serviceName = 'tsimp'
-export const daemonScript = fileURLToPath(getUrl('./daemon.mjs'))
+export const daemonScript = fileURLToPath(getUrl('./service/daemon.mjs'))
 
 export class DaemonClient extends SockDaemonClient<
   ServiceRequest,

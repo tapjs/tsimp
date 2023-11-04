@@ -3,7 +3,7 @@
 // This is slow! It is only done once per service instance.
 
 import ts from 'typescript'
-import { error, info, trace } from './debug.js'
+import { error, info, trace } from '../debug.js'
 import {
   fileContents,
   fileVersions,

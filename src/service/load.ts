@@ -5,7 +5,7 @@ import { mkdirpSync } from 'mkdirp'
 import { relative, resolve } from 'path'
 import { enable, perfalize } from 'perfalize'
 import { ParsedCommandLine } from 'typescript'
-import { cachedMtime } from './cached.js'
+import { cachedMtime } from '@isaacs/cached'
 import { compile } from './compile.js'
 import { reportAll } from './diagnostic.js'
 import {
@@ -15,7 +15,7 @@ import {
   readFile,
 } from './ts-sys-cached.js'
 import { tsconfig } from './tsconfig.js'
-import { CompileResult } from './types.js'
+import { CompileResult } from '../types.js'
 
 enable({ minimum: 0 })
 
@@ -52,7 +52,7 @@ export const load = (
   lastConfig = config
   // compile to a file on disk, but only if the source has changed.
   const compile = typeCheck ? compileTypeCheck : compileTranspileOnly
-  const cachedMtime = compile.mtimeCache.get(fileName)
+  const cachedMtime = compile.mtimeCache.get(fileName)?.[0]
   const newMtime = compile.getMtime(fileName)
   const outFileBase = relative(cwd, fileName)
     .replace(/\.\./g, '__')

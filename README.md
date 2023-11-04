@@ -127,7 +127,7 @@ You can use a different filename by setting
 `TSIMP_PROJECT=<filename>` in the environment.
 
 If there is a `tsimp` field in the tsconfig json file, then that
-will override anything else in the file.  For example:
+will override anything else in the file. For example:
 
 ```json
 {

@@ -7,8 +7,8 @@ import { enable, perfalize, perfalizeFn } from 'perfalize'
 import ts from 'typescript'
 import { deserialize, serialize } from 'v8'
 import { error, info, trace, warn } from './debug.js'
-import { report } from './diagnostic.js'
-import { tsconfig } from './tsconfig.js'
+import { report } from './service/diagnostic.js'
+import { tsconfig } from './service/tsconfig.js'
 
 if (process.env.TSIMP_PROFILE === '1') enable({ minimum: 0 })
 const cwd = process.cwd()

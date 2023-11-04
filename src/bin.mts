@@ -19,10 +19,10 @@ const major = parseInt(sMajor, 10)
 const minor = parseInt(sMinor, 10)
 const useImport = major > 20 || (major === 20 && minor >= 6)
 const importScript = fileURLToPath(
-  new URL('./import.mjs', import.meta.url)
+  new URL('./hooks/import.mjs', import.meta.url)
 )
 const loaderScript = fileURLToPath(
-  new URL('./legacy-loader.mjs', import.meta.url)
+  new URL('./hooks/legacy-loader.mjs', import.meta.url)
 )
 const addArg = useImport
   ? `--import=${importScript}`
@@ -115,16 +115,13 @@ const compile = async (src: string) => {
 }
 
 const cwdURL = String(pathToFileURL(pathResolve('x')))
-const resolve = async (
-  url: string,
-  parentURL: string = cwdURL
-) => {
+const resolve = async (url: string, parentURL: string = cwdURL) => {
   if (!parentURL.startsWith('file://')) {
     parentURL = String(pathToFileURL(pathResolve(parentURL)))
   }
   const p = parentURL === cwdURL ? 'cwd' : parentURL
-  const f = url.startsWith('./') || url.startsWith('../')
-    ? ` from ${p}` : ''
+  const f =
+    url.startsWith('./') || url.startsWith('../') ? ` from ${p}` : ''
   console.error(`import('${url}')${f}`)
   const { DaemonClient } = await import('./client.js')
   console.log(await new DaemonClient().resolve(url, parentURL))

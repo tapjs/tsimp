@@ -3,8 +3,8 @@ import { relative, resolve } from 'path'
 import { enable, perfalize } from 'perfalize'
 import ts from 'typescript'
 import { error, info, trace, warn } from './debug.js'
-import { report } from './diagnostic.js'
-import { tsconfig } from './tsconfig.js'
+import { report } from './service/diagnostic.js'
+import { tsconfig } from './service/tsconfig.js'
 
 realpathSync
 relative

@@ -1,3 +1,5 @@
+import { cached, cachedMtime } from '@isaacs/cached'
+import { catcher, catchWrap } from '@isaacs/catcher'
 import {
   BigIntStats,
   Dirent,
@@ -8,8 +10,6 @@ import {
   statSync,
 } from 'fs'
 import { isAbsolute, relative, resolve, sep } from 'path'
-import { cached, cachedMtime } from './cached.js'
-import { catcher, catchWrap } from './catcher.js'
 const cwd = process.cwd()
 
 export const normalizeSlashes = (path: string): string =>

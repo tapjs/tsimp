@@ -1,0 +1,11 @@
+/node_modules
+/*.json
+/example
+/.github
+/dist
+.env
+/tap-snapshots
+/.nyc_output
+/coverage
+/benchmark
+/.tshy

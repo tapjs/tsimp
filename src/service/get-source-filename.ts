@@ -1,7 +1,7 @@
 import { statSync } from 'fs'
 import { parse, relative, resolve } from 'path'
 import ts from 'typescript'
-import {debug} from './debug.js'
+import { debug } from '../debug.js'
 import { tsconfig } from './tsconfig.js'
 
 /**

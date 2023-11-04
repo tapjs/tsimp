@@ -4,8 +4,8 @@
   "tshy": {
     "exports": {
       "./package.json": "./package.json",
-      "./loader": "./src/legacy-loader.mts",
-      "./import": "./src/import.mts",
+      "./loader": "./src/hooks/legacy-loader.mts",
+      "./import": "./src/hooks/import.mts",
       ".": "./src/index.ts"
     }
   },
@@ -14,14 +14,14 @@
     "./package.json": "./package.json",
     "./loader": {
       "import": {
-        "types": "./dist/esm/legacy-loader.d.mts",
-        "default": "./dist/esm/legacy-loader.mjs"
+        "types": "./dist/esm/hooks/legacy-loader.d.mts",
+        "default": "./dist/esm/hooks/legacy-loader.mjs"
       }
     },
     "./import": {
       "import": {
-        "types": "./dist/esm/import.d.mts",
-        "default": "./dist/esm/import.mjs"
+        "types": "./dist/esm/hooks/import.d.mts",
+        "default": "./dist/esm/hooks/import.mjs"
       }
     },
     ".": {
@@ -36,9 +36,12 @@
     }
   },
   "scripts": {
-    "prepare": "tshy"
+    "prepare": "tshy",
+    "format": "prettier --write . --loglevel warn --cache"
   },
   "dependencies": {
+    "@isaacs/cached": "^1.0.1",
+    "@isaacs/catcher": "^1.0.4",
     "foreground-child": "^3.1.1",
     "mkdirp": "^3.0.1",
     "pirates": "^4.0.6",

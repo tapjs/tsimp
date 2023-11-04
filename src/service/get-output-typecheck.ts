@@ -2,7 +2,7 @@
 
 import { relative } from 'path'
 import type ts from 'typescript'
-import { info, warn } from './debug.js'
+import { info, warn } from '../debug.js'
 import { getLanguageService } from './language-service.js'
 import { updateMemoryCache } from './resolve-module-name-literals.js'
 import { getCurrentDirectory } from './ts-sys-cached.js'

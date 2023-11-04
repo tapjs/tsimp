@@ -57,11 +57,11 @@ const resolvedFileName =
 
 console.error(host.readFile(resolvedFileName))
 const program = ts.createProgram(['src/t.ts'], configOptions, host)
-const sf = program.getSourceFile('src/t.ts')
+//const sf = program.getSourceFile('src/t.ts')
 console.error(program.getGlobalDiagnostics())
 // console.log('sourceFile', sf)
-const emitResult = program.emit(sf)
-console.log(compiledJS)//, sf)
+//const emitResult = program.emit(sf)
+console.log(compiledJS) //, sf)
 // const tshy = ts.resolveModuleName(
 //   'tshy',
 //   resolve('src/x.ts'),

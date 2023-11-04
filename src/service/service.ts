@@ -4,7 +4,7 @@ import { parse } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { SockDaemonServer } from 'sock-daemon'
 import { fileURLToPath } from 'url'
-import { getUrl } from './get-url.js'
+import { getUrl } from '../get-url.js'
 import { getLanguageService } from './language-service.js'
 import { load } from './load.js'
 import { fileExists } from './ts-sys-cached.js'
@@ -18,10 +18,10 @@ import {
   ServiceRequest,
   ServiceResolveRequest,
   ServiceResolveResult,
-} from './types.js'
+} from '../types.js'
 
 export const serviceName = 'tsimp'
-export const daemonScript = fileURLToPath(getUrl('./daemon.mjs'))
+export const daemonScript = fileURLToPath(getUrl('./service/daemon.mjs'))
 
 const equivalents = new Map([
   ['.js', ['.ts', '.tsx']],
