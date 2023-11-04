@@ -24,10 +24,6 @@ const sSMEdone = perfalize('setSourceMapsEnabled')
 process.setSourceMapsEnabled(true)
 sSMEdone()
 
-// TODO: receive diagnostic pretty reporting flag as argument
-// so the client can set it as needed, since we can't tell here
-// whether the main client has a TTY stderr or not.
-
 const setupDone = perfalize('setup')
 let lastConfig: ParsedCommandLine
 const cwd = getCurrentDirectory()

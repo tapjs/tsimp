@@ -23,11 +23,15 @@ export const getOutputTypeCheck = (
   const cwd = getCurrentDirectory()
   updateMemoryCache(code, fileName)
 
-  // if we can't get the source file, then mark it as external
-  // and return the code un-compiled. Eg, loading a JS file.
+  // if we can't get the source file, then return the code un-compiled.
+  // Eg, loading a JS file if allowJs is not set.
   const sf = initialProgram.getSourceFile(fileName)
   if (!sf) {
-    console.error('going to fail', sf)
+    warn('could not get sourceFile, returning raw contents', fileName)
+    return {
+      outputText: code,
+      diagnostics: [],
+    }
   }
 
   const programBefore = service.getProgram()
@@ -43,9 +47,6 @@ export const getOutputTypeCheck = (
 
   const programAfter = service.getProgram()
   if (programBefore !== programAfter) {
-    // TODO: is this because we're not doing our own moduleResolution
-    // stuff, but if we update the program version and internal files
-    // and such, then it won't have to make a new Program?
     warn(`service.program changed while compiling ${fileName}`)
   }
 
@@ -69,6 +70,6 @@ export const getOutputTypeCheck = (
     const duration =
       Math.floor((performance.now() - start) * 1000) / 1000
     const rel = relative(cwd, fileName)
-    console.error('emitted with typeCheck', [rel, duration])
+    info('emitted with typeCheck', [rel, duration])
   }
 }
