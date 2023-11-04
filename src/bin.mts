@@ -101,9 +101,7 @@ const compile = async (src: string) => {
   const { DaemonClient } = await import('./client.js')
   const start = performance.now()
   const { fileName, diagnostics } = await new DaemonClient().compile(
-    src,
-    true,
-    !!process.stderr.isTTY
+    src
   )
   const duration =
     Math.floor((performance.now() - start) * 1000) / 1000

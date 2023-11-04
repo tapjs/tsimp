@@ -9,8 +9,10 @@ import { resolve as pathResolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'url'
 import { MessagePort } from 'worker_threads'
 import { DaemonClient } from '../client.js'
+import {getDiagMode} from '../diagnostic-mode.js'
 
-const typeCheck = process.env.TSIMP_TRANSPILE_ONLY !== '1'
+const diagMode = getDiagMode()
+
 const client = new DaemonClient()
 
 let pretty = process.stderr.isTTY
@@ -51,7 +53,7 @@ export const load: LoadHook = async (url, context, nextLoad) => {
   if (url.startsWith('file://') && !url.startsWith(nm)) {
     const { fileName, diagnostics } = await client.compile(
       fileURLToPath(url),
-      typeCheck,
+      diagMode,
       pretty
     )
     if (diagnostics.length) {

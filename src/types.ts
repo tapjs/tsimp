@@ -1,4 +1,5 @@
 import { MessageBase } from 'sock-daemon'
+import { DiagMode } from './diagnostic-mode.js'
 
 export type ReadyState = 'ALREADY RUNNING' | 'READY'
 
@@ -14,7 +15,7 @@ export type ServicePreloadRequest = MessageBase &
 
 export type CompileRequest = {
   fileName: string
-  typeCheck: boolean
+  diagMode: DiagMode
   pretty?: boolean
 }
 

@@ -183,3 +183,16 @@ your `module` tsconfig for `tsimp` to something like `Node16` or
   }
 }
 ```
+
+## Compilation Diagnostics
+
+Set the `TSIMP_DIAG` environment variable to control what happens
+when there are compilation diagnostics.
+
+- `TSIMP_DIAG=warn` (default) Print diagnostics to `stderr`, but
+  still transpile the code if possible.
+- `TSIMP_DIAG=error` Print diagnostics to `stderr`, and fail if
+  there are any diagnostics.
+- `TSIMP_DIAG=ignore` Just transpile the code, ignoring all
+  diagnostics. (Similar to ts-node's `TS_NODE_TRANSPILE_ONLY=1`
+  option.)

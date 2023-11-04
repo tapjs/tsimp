@@ -5,9 +5,6 @@ import { pathToFileURL } from 'node:url'
 import { SockDaemonServer } from 'sock-daemon'
 import { fileURLToPath } from 'url'
 import { getUrl } from '../get-url.js'
-import { getLanguageService } from './language-service.js'
-import { load } from './load.js'
-import { fileExists } from './ts-sys-cached.js'
 import {
   CompileResult,
   PreloadResult,
@@ -19,9 +16,14 @@ import {
   ServiceResolveRequest,
   ServiceResolveResult,
 } from '../types.js'
+import { getLanguageService } from './language-service.js'
+import { load } from './load.js'
+import { fileExists } from './ts-sys-cached.js'
 
 export const serviceName = 'tsimp'
-export const daemonScript = fileURLToPath(getUrl('./service/daemon.mjs'))
+export const daemonScript = fileURLToPath(
+  getUrl('./service/daemon.mjs')
+)
 
 const equivalents = new Map([
   ['.js', ['.ts', '.tsx']],
@@ -68,13 +70,18 @@ export class DaemonServer extends SockDaemonServer<
   }
 
   #handleCompile(request: ServiceCompileRequest): CompileResult {
-    const fileName = findTsFile(request.fileName)
-    if (!fileName) {
+    const sourceFile = findTsFile(request.fileName)
+    if (!sourceFile) {
       throw new Error(
         'failed to resolve typescript source for ' + request.fileName
       )
     }
-    return load(fileName, request.typeCheck, request.pretty)
+    const { fileName, diagnostics } = load(
+      sourceFile,
+      request.diagMode !== 'ignore',
+      request.pretty
+    )
+    return { fileName, diagnostics }
   }
 
   #handleResolve(request: ServiceResolveRequest): ResolveResult {

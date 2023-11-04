@@ -1,6 +1,7 @@
 import { resolve } from 'path'
 import { SockDaemonClient } from 'sock-daemon'
 import { fileURLToPath, pathToFileURL } from 'url'
+import { DiagMode, getDiagMode } from './diagnostic-mode.js'
 import { getUrl } from './get-url.js'
 import {
   CompileResult,
@@ -13,7 +14,9 @@ import {
 } from './types.js'
 
 export const serviceName = 'tsimp'
-export const daemonScript = fileURLToPath(getUrl('./service/daemon.mjs'))
+export const daemonScript = fileURLToPath(
+  getUrl('./service/daemon.mjs')
+)
 
 export class DaemonClient extends SockDaemonClient<
   ServiceRequest,
@@ -36,18 +39,24 @@ export class DaemonClient extends SockDaemonClient<
 
   async compile(
     inputFile: string,
-    typeCheck: boolean,
-    pretty: boolean = process.stderr.isTTY
+    diagMode: DiagMode = getDiagMode(),
+    pretty: boolean = !!process.stderr.isTTY
   ): Promise<CompileResult> {
     inputFile = resolve(inputFile)
     const { fileName, diagnostics } = (await this.request({
       action: 'compile',
       fileName: String(pathToFileURL(inputFile)),
-      typeCheck,
+      diagMode,
       pretty,
     })) as CompileResult
+    if (diagMode === 'ignore') {
+      diagnostics.length = 0
+    }
+    if ((diagMode === 'error' && diagnostics.length) || !fileName) {
+      return { diagnostics }
+    }
     return {
-      ...(fileName ? { fileName } : {}),
+      fileName,
       diagnostics,
     }
   }
