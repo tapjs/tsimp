@@ -9,7 +9,7 @@ import { resolve as pathResolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'url'
 import { MessagePort } from 'worker_threads'
 import { DaemonClient } from '../client.js'
-import {getDiagMode} from '../diagnostic-mode.js'
+import { getDiagMode } from '../diagnostic-mode.js'
 
 const diagMode = getDiagMode()
 
@@ -17,8 +17,13 @@ const client = new DaemonClient()
 
 let pretty = process.stderr.isTTY
 export const globalPreload: GlobalPreloadHook = ({ port }) => {
+  const base = String(new URL(import.meta.url))
   port.on('message', ({ stderrIsTTY }) => (pretty = stderrIsTTY))
   return `
+const { createRequire } = getBuiltin('module')
+const { fileURLToPath } = getBuiltin('url')
+const require = createRequire(${JSON.stringify(base)})
+require('./require.js')
 port?.postMessage({ stderrIsTTY: !!process.stderr.isTTY })
   `
 }
@@ -39,6 +44,7 @@ export const resolve: ResolveHook = async (
   const { parentURL } = context
   const target = String(parentURL ? new URL(url, parentURL) : url)
   if (target.startsWith('file://') && !target.startsWith(nm)) {
+    console.error('resolve', url, parentURL)
     const result = await client.resolve(url, parentURL)
     return nextResolve(result, context)
   } else {

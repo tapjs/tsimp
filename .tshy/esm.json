@@ -6,7 +6,8 @@
     "../src/**/*.tsx"
   ],
   "exclude": [
-    ".././src/get-url-cjs.cts"
+    ".././src/get-url-cjs.cts",
+    ".././src/require-commonjs-load-cjs.cts"
   ],
   "compilerOptions": {
     "outDir": "../.tshy-build-tmp/esm"

@@ -4,6 +4,7 @@ import { parse } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { SockDaemonServer } from 'sock-daemon'
 import { fileURLToPath } from 'url'
+import { equivalents } from '../equivalents.js'
 import { getUrl } from '../get-url.js'
 import {
   CompileResult,
@@ -25,12 +26,6 @@ export const daemonScript = fileURLToPath(
   getUrl('./service/daemon.mjs')
 )
 
-const equivalents = new Map([
-  ['.js', ['.ts', '.tsx']],
-  ['.jsx', ['.tsx']],
-  ['.cjs', ['.cts']],
-  ['.mjs', ['.mts']],
-])
 const allTsExts = ['.ts', '.tsx', '.mts', '.cts']
 
 const findTsFile = (url: string | URL) => {

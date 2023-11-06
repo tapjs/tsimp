@@ -1,7 +1,10 @@
 import { register } from 'node:module'
 import { MessageChannel } from 'node:worker_threads'
-
 import { getUrl } from '../get-url.js'
+import './require.js'
+
+//@ts-ignore
+process.setSourceMapsEnabled(true)
 
 const { port1, port2 } = new MessageChannel()
 port1.unref()
