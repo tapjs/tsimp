@@ -37,6 +37,8 @@
   "scripts": {
     "prepare": "tshy",
     "format": "prettier --write . --loglevel warn --cache",
+    "pretest": "npm run prepare",
+    "presnap": "npm run prepare",
     "snap": "tap",
     "test": "tap"
   },
@@ -60,7 +62,7 @@
     "prettier": "^2.8.8",
     "tap": "^18.5.7",
     "ts-node": "^10.9.1",
-    "tshy": "^1.4.0",
+    "tshy": "^1.8.0",
     "tsx": "^3.13.0",
     "typescript": "^5.2.2"
   },

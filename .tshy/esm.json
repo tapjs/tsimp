@@ -10,6 +10,6 @@
     ".././src/require-commonjs-load-cjs.cts"
   ],
   "compilerOptions": {
-    "outDir": "../.tshy-build-tmp/esm"
+    "outDir": "../.tshy-build/esm"
   }
 }
