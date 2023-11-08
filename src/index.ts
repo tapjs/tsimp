@@ -21,4 +21,7 @@ if (typeof Module.register === 'function') {
   port1.postMessage({ stderrIsTTY: !!process.stderr.isTTY })
 }
 
+export * from './client.js'
+
+// the imp is a client of the daemon
 export const tsimp = new DaemonClient()
