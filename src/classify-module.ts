@@ -10,14 +10,12 @@ export type PackageJsonType = 'commonjs' | 'module'
 export const isPackageJsonType = (t: any): t is PackageJsonType =>
   typeof t === 'string' && (t === 'commonjs' || t === 'module')
 
-const readPJTypeRaw = catchWrap((pj: string) => {
+const readPJType = cachedMtime(catchWrap((pj: string) => {
   const contents = readFile(pj)
   if (!contents) return undefined
   const t = JSON.parse(contents).type
-  if (isPackageJsonType(t)) return t
-  return 'commonjs'
-})
-const readPJType = cachedMtime(readPJTypeRaw)
+  return isPackageJsonType(t) ? t : 'commonjs'
+}))
 
 export const classifyModule = (fileName: string) => {
   if (fileName.endsWith('.cts') || fileName.endsWith('.cjs')) {

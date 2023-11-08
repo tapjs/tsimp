@@ -36,7 +36,9 @@
   },
   "scripts": {
     "prepare": "tshy",
-    "format": "prettier --write . --loglevel warn --cache"
+    "format": "prettier --write . --loglevel warn --cache",
+    "snap": "tap",
+    "test": "tap"
   },
   "dependencies": {
     "@isaacs/cached": "^1.0.1",
@@ -56,6 +58,7 @@
     "@types/node": "^20.8.4",
     "perfalize": "^1.0.1",
     "prettier": "^2.8.8",
+    "tap": "^18.5.7",
     "ts-node": "^10.9.1",
     "tshy": "^1.4.0",
     "tsx": "^3.13.0",
@@ -74,5 +77,9 @@
   },
   "main": "./dist/commonjs/index.js",
   "types": "./dist/commonjs/index.d.ts",
-  "type": "module"
+  "type": "module",
+  "tap": {
+    "coverage-map": "map.js",
+    "fail-skip": true
+  }
 }
