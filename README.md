@@ -1,6 +1,6 @@
 # tsimp 😈
 
-A TypeScript Import loader for Node.js
+A TypeScript IMPort loader for Node.js
 
 ## What It Is
 
@@ -40,13 +40,11 @@ How this differs:
   experimental APIs when that's not available.
 - Type checking is enabled by default, so no need to run an extra
   `tsc --noEmit` step after running tests, using a persistent
-  `LanguageService` daemon and a ridiculous amount of caching to
-  make it performant.
+  [sock daemon](https://isaacs.github.io/sock-daemon) and a
+  generous amount of caching to make it performant.
 - It's just a module loader, not a bunch of other things. So
-  there's no repl, no bundler, etc. It's not a lot of code
-  (unless you count TypeScript itself, which to be fair, is kind
-  of a lot of code, but you're probably already biting that
-  bullet).
+  there's no repl, no bundler, etc. Pretty much all it does is
+  make TypeScript modules in Node work.
 
 ## USAGE
 
@@ -85,12 +83,23 @@ In Node v20.6 and higher, you can also load `tsimp` in your
 program, and from that point forward, TypeScript modules will
 Just Work.
 
+Note that `import` declarations happen in parallel *before* the
+code is executed, so you'll need to split it up like this:
+
 ```js
 import 'tsimp'
 // has to be done as an async import() so that it occurs
 // after the tsimp import is finished. But any imports that the
 // typescript program does can be "normal" top level imports.
 const { SomeThing } = await import('./some-thing.ts')
+```
+
+By comparison, this won't work, because the imports happen in
+parallel.
+
+```
+import 'tsimp'
+import { SomeThing } from './some-thing.ts'
 ```
 
 CommonJS `require()` is patched as well. To use `tsimp` in
