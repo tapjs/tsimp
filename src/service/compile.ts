@@ -5,6 +5,7 @@
 // and file change time.
 
 import ts from 'typescript'
+import { classifyModule } from '../classify-module.js'
 import { getOutputTypeCheck } from './get-output-typecheck.js'
 import {
   getOutputForceCommonJS,
@@ -12,13 +13,6 @@ import {
   getOutputTranspileOnly,
 } from './transpile-only.js'
 import { tsconfig } from './tsconfig.js'
-
-const classifyModule = (fileName: string) =>
-  fileName.endsWith('.cts') || fileName.endsWith('.cjs')
-    ? 'nodecjs'
-    : fileName.endsWith('.mts') || fileName.endsWith('.mjs')
-    ? 'nodeesm'
-    : 'auto'
 
 export const compile = (
   code: string,
@@ -54,7 +48,7 @@ export const compile = (
 
   // If module classification contradicts the above, call the relevant transpiler
   if (
-    classification === 'nodecjs' &&
+    classification === 'commonjs' &&
     (shouldOverwriteEmitWhenForcingCommonJS || emitSkipped)
   ) {
     outputText = getOutputForceCommonJS(
@@ -62,7 +56,7 @@ export const compile = (
       normalizedFileName
     ).outputText
   } else if (
-    classification === 'nodeesm' &&
+    classification === 'module' &&
     (shouldOverwriteEmitWhenForcingEsm || emitSkipped)
   ) {
     outputText = getOutputForceESM(
@@ -73,9 +67,9 @@ export const compile = (
     // Happens when ts compiler skips emit or in transpileOnly mode
     const classification = classifyModule(fileName)
     outputText =
-      classification === 'nodecjs'
+      classification === 'commonjs'
         ? getOutputForceCommonJS(code, normalizedFileName).outputText
-        : classification === 'nodeesm'
+        : classification === 'module'
         ? getOutputForceESM(code, normalizedFileName).outputText
         : getOutputTranspileOnly(code, normalizedFileName).outputText
   }

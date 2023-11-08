@@ -65,7 +65,10 @@ export const getOutputTypeCheck = (
       )
     }
 
-    return { outputText: output.outputFiles[0]?.text, diagnostics }
+    return {
+      outputText: output.outputFiles[0]?.text,
+      diagnostics,
+    }
   } finally {
     const duration =
       Math.floor((performance.now() - start) * 1000) / 1000

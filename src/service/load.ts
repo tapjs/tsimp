@@ -5,6 +5,7 @@ import { writeFileSync } from 'fs'
 import { mkdirpSync } from 'mkdirp'
 import { relative, resolve } from 'path'
 import { ParsedCommandLine } from 'typescript'
+import {info} from '../debug.js'
 import { getOutputFile } from '../get-output-file.js'
 import { CompileResult } from '../types.js'
 import { compile } from './compile.js'
@@ -59,7 +60,7 @@ export const load = (
   const { outputText, diagnostics } = compile(fileName)
   const duration =
     Math.floor((performance.now() - start) * 1000) / 1000
-  console.error('compiled', [
+  info('compiled', [
     relative(process.cwd(), fileName),
     duration,
   ])

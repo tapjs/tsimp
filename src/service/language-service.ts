@@ -119,6 +119,6 @@ export const getLanguageService = (): LanguageServiceWithHost => {
   )
   const duration =
     Math.floor((performance.now() - start) * 1000) / 1000
-  console.error('created language service', duration)
+  info('created language service', duration)
   return lastService
 }
