@@ -1,8 +1,4 @@
-import { info } from './debug.js'
-
 // polyfilled in commonjs build
-export const getUrl = (f: string) => {
-  info('getUrl', f)
+export const getUrl = (f: string) =>
   //@ts-ignore
-  return String(new URL(`./${f}`, import.meta.url))
-}
+  String(new URL(`./${f}`, import.meta.url))
