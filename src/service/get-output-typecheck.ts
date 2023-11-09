@@ -6,7 +6,7 @@ import { info, warn } from '../debug.js'
 import { updateFileVersion } from './file-versions.js'
 import { getLanguageService } from './language-service.js'
 import { markFileNameInternal } from './resolve-module-name-literals.js'
-import { getCurrentDirectory } from './ts-sys-cached.js'
+import { getCurrentDirectory } from '../ts-sys-cached.js'
 
 export const getOutputTypeCheck = (
   code: string,

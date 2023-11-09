@@ -3,13 +3,14 @@
 // This is designed to be called on demand. It will automatically reload
 // the config if the mtime of the located config file changes, and always
 // return the same object if it parses to the same values.
+import { catcher } from '@isaacs/catcher'
 import { statSync } from 'fs'
 import { resolve } from 'path'
 import ts from 'typescript'
 import { walkUp } from 'walk-up-path'
 import { error, warn } from '../debug.js'
 import { report } from './diagnostic.js'
-import { getCurrentDirectory, readFile } from './ts-sys-cached.js'
+import { getCurrentDirectory, readFile } from '../ts-sys-cached.js'
 
 const filename = process.env.TSIMP_PROJECT || 'tsconfig.json'
 
@@ -17,8 +18,12 @@ let loadedConfig: ts.ParsedCommandLine
 let loadedConfigJSON: string
 
 // ms between checks to make sure the config hasn't changed.
-const STAT_FREQ = 100
-let lastStat: number
+// overridable just so we can test it without waiting 100ms per test
+// in practice, this is more than fast enough for most cases.
+/* c8 ignore start */
+const STAT_FREQ = Number(process.env.TSIMP_CONFIG_DEBOUNCE ?? 100) || 100
+/* c8 ignore stop */
+let lastStat: number = -1 * STAT_FREQ
 let mtime: number = -1
 let configPath: string
 
@@ -27,13 +32,11 @@ export const tsconfig = () => {
   if (loadedConfig && configPath) {
     if (performance.now() - lastStat > STAT_FREQ) {
       // if the stat fails, that's a change to the file.
-      try {
-        const m = Number(statSync(configPath).mtime)
-        if (m === mtime) {
-          lastStat = performance.now()
-          return loadedConfig
-        }
-      } catch {}
+      const m = catcher(() => Number(statSync(configPath).mtime))
+      if (m === mtime) {
+        lastStat = performance.now()
+        return loadedConfig
+      }
     } else {
       return loadedConfig
     }
@@ -48,17 +51,18 @@ export const tsconfig = () => {
     } = readResult
     if (error) {
       // cannot read file, keep looking
+      /* c8 ignore start */
       if (error.code !== 5083) {
         warn('could not load config file', configPath, report(error))
       }
+      /* c8 ignore stop */
       continue
     }
 
     // will definitely have it, because we got a result
-    mtime = Number(readFile.mtimeCache.get(configPath))
+    mtime = Number(readFile.mtimeCache.get(configPath)?.[0])
     lastStat = performance.now()
 
-    if (tsimp) applyOverrides(config, tsimp)
     const res = applyOverrides(
       // default rootDir to the folder containing tsconfig, if not
       // set explicitly to something else, so we always have one.
@@ -76,11 +80,12 @@ export const tsconfig = () => {
           strict: true,
           forceConsistentCasingInFileNames: true,
           // defaults that ts uses when transpiling
-          jsx: 1, // ts.JsxEmit.Preserve
+          jsx: ts.JsxEmit.Preserve,
         },
       },
       applyOverrides(tsimp ? applyOverrides(config, tsimp) : config, {
         compilerOptions: {
+          // settings that tsimp depends on, cannot be overridden
           // virtual folder, nothing actually written to disk ever
           outDir: resolve('.tsimp-compiled'),
           sourceMap: undefined,

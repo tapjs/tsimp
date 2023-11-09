@@ -22,7 +22,7 @@ import {
   getDirectories,
   readFile,
   realpath,
-} from './ts-sys-cached.js'
+} from '../ts-sys-cached.js'
 import { tsconfig } from './tsconfig.js'
 
 let lastConfig: ts.ParsedCommandLine

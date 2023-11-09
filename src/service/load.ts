@@ -15,7 +15,7 @@ import {
   getCurrentDirectory,
   normalizeSlashes,
   readFile,
-} from './ts-sys-cached.js'
+} from '../ts-sys-cached.js'
 import { tsconfig } from './tsconfig.js'
 
 let lastConfig: ParsedCommandLine

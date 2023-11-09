@@ -12,7 +12,7 @@ import { MessagePort } from 'worker_threads'
 import { classifyModule } from '../classify-module.js'
 import { DaemonClient } from '../client.js'
 import { getDiagMode } from '../diagnostic-mode.js'
-import { readFile } from '../service/ts-sys-cached.js'
+import { readFile } from '../ts-sys-cached.js'
 
 // in some cases on the loader thread, console.error doesn't actually
 // print. sync write to fd 1 instead.

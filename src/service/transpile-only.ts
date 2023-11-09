@@ -3,7 +3,7 @@ import { dirname } from 'path'
 import ts from 'typescript'
 import { walkUp } from 'walk-up-path'
 import { report } from './diagnostic.js'
-import { normalizePath, readFile } from './ts-sys-cached.js'
+import { normalizePath, readFile } from '../ts-sys-cached.js'
 import { tsconfig } from './tsconfig.js'
 
 // The technique here is lifted from ts-node's transpileOnly method

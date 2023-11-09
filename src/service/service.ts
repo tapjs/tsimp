@@ -19,7 +19,7 @@ import {
 } from '../types.js'
 import { getLanguageService } from './language-service.js'
 import { load } from './load.js'
-import { fileExists } from './ts-sys-cached.js'
+import { fileExists } from '../ts-sys-cached.js'
 
 export const serviceName = 'tsimp'
 export const daemonScript = fileURLToPath(

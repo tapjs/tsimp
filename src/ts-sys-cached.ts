@@ -10,6 +10,7 @@ import {
   statSync,
 } from 'fs'
 import { isAbsolute, relative, resolve, sep } from 'path'
+import { fileURLToPath, pathToFileURL } from 'url'
 const cwd = process.cwd()
 
 export const normalizeSlashes = (path: string): string =>
@@ -18,39 +19,45 @@ export const normalizeSlashes = (path: string): string =>
 export const readFile = cachedMtime(
   catchWrap((p: string) => readFileSync(p, 'utf8'), undefined)
 )
+
 const safeStat = catchWrap(statSync)
 export const directoryExists = cached(
   (p: string) => !!safeStat(p)?.isDirectory()
 )
-export const realpath = cachedMtime((path: string) =>
-  catcher(() => realpathSync(path, 'utf8'), path)
-)
-export const getCurrentDirectory = () => cwd
 export const fileExists = cached(
   (p: string) => !!safeStat(p)?.isFile()
 )
+
+export const realpath = cachedMtime((path: string) =>
+  catcher(() => realpathSync(path, 'utf8'), path)
+)
+
+export const getCurrentDirectory = () => cwd
 
 const pathHasTrailingSlash =
   sep === '/'
     ? (p: string) => p.endsWith('/')
     : (p: string) => p.endsWith('/') || p.endsWith(sep)
 
-const normalizePathRaw = (path: string): string => {
+export const normalizePath = cached((path: string): string => {
   const trailingSlash = pathHasTrailingSlash(path)
   path = normalizeSlashes(path)
   const isFileUrl = path.startsWith('file://')
-  if (isFileUrl) path = path.substring('file://'.length)
+  if (isFileUrl) path = fileURLToPath(path)
   const isAbs = isFileUrl || isAbsolute(path)
   path = resolve(path)
   if (!isAbs) path = relative(cwd, path)
-  if (isFileUrl) path = 'file://' + path
-  return (
-    (isFileUrl ? 'file://' : '') +
-    normalizeSlashes(path) +
-    (trailingSlash ? '/' : '')
-  )
-}
-export const normalizePath = cached(normalizePathRaw)
+  if (isFileUrl) path = String(pathToFileURL(path))
+  path = normalizeSlashes(path)
+  if (trailingSlash) path += '/'
+  if (sep === '\\') {
+    // capitalize drive letters and UNC host/share names.
+    path = path.replace(/^([a-z]:\/|\/\/[^\/]+\/[^\/]+)/, $ =>
+      $.toUpperCase()
+    )
+  }
+  return path
+})
 
 export interface FileSystemEntries {
   files: string[]
@@ -69,7 +76,9 @@ const getFileSystemEntries = cachedMtime(
     for (const dirent of entries) {
       const entry = dirent.name
       let stat: Dirent | Stats | BigIntStats | undefined
+      /* c8 ignore start */
       if (entry === '.' || entry === '..') continue
+      /* c8 ignore stop */
       if (dirent.isSymbolicLink()) {
         stat = safeStat(resolve(path, entry))
       } else {

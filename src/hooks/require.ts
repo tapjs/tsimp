@@ -7,7 +7,7 @@ import { getDiagMode } from '../diagnostic-mode.js'
 import { equivalents } from '../equivalents.js'
 import { getOutputFile } from '../get-output-file.js'
 import { requireCommonJSLoad } from '../require-commonjs-load.js'
-import { fileExists, readFile } from '../service/ts-sys-cached.js'
+import { fileExists, readFile } from '../ts-sys-cached.js'
 
 const nodeVersion = process.versions.node
   .split('.')

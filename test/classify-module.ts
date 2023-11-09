@@ -88,7 +88,7 @@ t.test('classify some modules', t => {
     const { classifyModule } = await t.mockImport(
       '../src/classify-module.js',
       {
-        '../src/service/ts-sys-cached.js': {
+        '../src/ts-sys-cached.js': {
           readFile: () => undefined,
         },
       }

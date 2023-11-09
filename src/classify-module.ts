@@ -4,7 +4,7 @@ import { cachedMtime } from '@isaacs/cached'
 import { catchWrap } from '@isaacs/catcher'
 import { dirname, resolve } from 'path'
 import { walkUp } from 'walk-up-path'
-import { readFile } from './service/ts-sys-cached.js'
+import { readFile } from './ts-sys-cached.js'
 
 export type PackageJsonType = 'commonjs' | 'module'
 export const isPackageJsonType = (t: any): t is PackageJsonType =>

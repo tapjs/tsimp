@@ -2,7 +2,7 @@ import ts from 'typescript'
 import { equivalents } from '../equivalents.js'
 import { addRootFile } from './file-versions.js'
 import { getCanonicalFileName } from './get-canonical-filename.js'
-import { getCurrentDirectory } from './ts-sys-cached.js'
+import { getCurrentDirectory } from '../ts-sys-cached.js'
 import { tsconfig } from './tsconfig.js'
 
 // reset cache on config change
