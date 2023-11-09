@@ -16,7 +16,7 @@ const host = {
 
 export const report = (
   diagnostic: Diagnostic,
-  pretty = process.stderr.isTTY
+  pretty = !!process.stderr.isTTY
 ): string =>
   pretty
     ? ts.formatDiagnosticsWithColorAndContext([diagnostic], host)

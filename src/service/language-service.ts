@@ -12,7 +12,7 @@ import {
 } from './file-versions.js'
 import {
   getResolveModuleNameLiterals,
-  moduleResolutionCache,
+  getModuleResolutionCache,
 } from './resolve-module-name-literals.js'
 import { getResolveTypeReferenceDirectiveReferences } from './resolve-type-reference-directive-references.js'
 import {
@@ -97,10 +97,10 @@ export const getLanguageService = (): LanguageServiceWithHost => {
       resolveTypeReferenceDirectiveReferences:
         getResolveTypeReferenceDirectiveReferences(
           host,
-          moduleResolutionCache
+          getModuleResolutionCache()
         ),
       resolveModuleNameLiterals: getResolveModuleNameLiterals(host),
-      getModuleResolutionCache: () => moduleResolutionCache,
+      getModuleResolutionCache,
     })
 
   const registry = ts.createDocumentRegistry(

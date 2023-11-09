@@ -3,8 +3,9 @@
 import { relative } from 'path'
 import type ts from 'typescript'
 import { info, warn } from '../debug.js'
+import { updateFileVersion } from './file-versions.js'
 import { getLanguageService } from './language-service.js'
-import { updateMemoryCache } from './resolve-module-name-literals.js'
+import { markFileNameInternal } from './resolve-module-name-literals.js'
 import { getCurrentDirectory } from './ts-sys-cached.js'
 
 export const getOutputTypeCheck = (
@@ -21,7 +22,8 @@ export const getOutputTypeCheck = (
     throw new Error('failed to load TS program')
   }
   const cwd = getCurrentDirectory()
-  updateMemoryCache(code, fileName)
+  markFileNameInternal(fileName)
+  updateFileVersion(fileName, code)
 
   // if we can't get the source file, then return the code un-compiled.
   // Eg, loading a JS file if allowJs is not set.

@@ -7,13 +7,14 @@ import './require.js'
 process.setSourceMapsEnabled(true)
 
 const { port1, port2 } = new MessageChannel()
-port1.unref()
-port2.unref()
 
 register(getUrl('./hooks/loader.mjs'), {
   parentURL: import.meta.url,
   data: { port: port2 },
   transferList: [port2],
 })
+
+port1.unref()
+port2.unref()
 
 port1.postMessage({ stderrIsTTY: !!process.stderr.isTTY })

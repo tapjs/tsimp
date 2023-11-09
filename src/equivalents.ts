@@ -15,9 +15,9 @@ type MapBase = {
 }
 interface ExtMap extends MapBase {
   '.js': readonly ['.ts', '.tsx']
-  '.jsx': readonly ['.tsx']
-  '.cjs': readonly ['.cts']
   '.mjs': readonly ['.mts']
+  '.cjs': readonly ['.cts']
+  '.jsx': readonly ['.tsx']
   '.ts': readonly ['.js']
   '.mts': readonly ['.mjs']
   '.cts': readonly ['.cjs']
@@ -26,14 +26,14 @@ interface ExtMap extends MapBase {
 
 export const map: ExtMap = {
   '.js': ['.ts', '.tsx'],
-  '.jsx': ['.tsx'],
-  '.cjs': ['.cts'],
   '.mjs': ['.mts'],
+  '.cjs': ['.cts'],
+  '.jsx': ['.tsx'],
   '.ts': ['.js'],
   '.mts': ['.mjs'],
   '.cts': ['.cjs'],
   '.tsx': ['.js', '.jsx'],
-} as const
+} as const satisfies MapBase
 
 export const allExts = Object.keys(map)
 export const isExt = (e: any): e is TSExt | JSExt => allExts.includes(e)

@@ -3,6 +3,7 @@ import { MessageChannel } from 'node:worker_threads'
 import { DaemonClient } from './client.js'
 import { getUrl } from './get-url.js'
 import './hooks/require.js'
+export * from './types.js'
 
 //@ts-ignore
 process.setSourceMapsEnabled(true)

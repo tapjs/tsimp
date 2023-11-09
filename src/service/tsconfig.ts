@@ -7,7 +7,8 @@ import { statSync } from 'fs'
 import { resolve } from 'path'
 import ts from 'typescript'
 import { walkUp } from 'walk-up-path'
-import fail from './fail.js'
+import { error, warn } from '../debug.js'
+import { report } from './diagnostic.js'
 import { getCurrentDirectory, readFile } from './ts-sys-cached.js'
 
 const filename = process.env.TSIMP_PROJECT || 'tsconfig.json'
@@ -47,8 +48,10 @@ export const tsconfig = () => {
     } = readResult
     if (error) {
       // cannot read file, keep looking
-      if (error.code === 5083) continue
-      fail('could not load config file', error)
+      if (error.code !== 5083) {
+        warn('could not load config file', configPath, report(error))
+      }
+      continue
     }
 
     // will definitely have it, because we got a result
@@ -99,9 +102,10 @@ export const tsconfig = () => {
     loadedConfigJSON = newConfigJSON
     return (loadedConfig = newConfig)
   }
-  throw fail(
+  error(
     `could not find config file named "${filename}", searching from "${getCurrentDirectory()}"`
   )
+  process.exit(1)
 }
 
 const applyOverrides = (config: any, overrides?: any): any => {

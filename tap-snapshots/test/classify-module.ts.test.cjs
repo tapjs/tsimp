@@ -18,45 +18,6 @@ Object {
 }
 `
 
-exports[`test/classify-module.ts > TAP > classify some modules > responds to changes in package.json file > noType > must match snapshot 1`] = `
-Object {
-  "index.cjs": "commonjs",
-  "index.cts": "commonjs",
-  "index.js": "commonjs",
-  "index.jsx": "commonjs",
-  "index.mjs": "module",
-  "index.mts": "module",
-  "index.ts": "commonjs",
-  "index.tsx": "commonjs",
-}
-`
-
-exports[`test/classify-module.ts > TAP > classify some modules > responds to changes in package.json file > typeCommonjs > must match snapshot 1`] = `
-Object {
-  "index.cjs": "commonjs",
-  "index.cts": "commonjs",
-  "index.js": "module",
-  "index.jsx": "module",
-  "index.mjs": "module",
-  "index.mts": "module",
-  "index.ts": "module",
-  "index.tsx": "module",
-}
-`
-
-exports[`test/classify-module.ts > TAP > classify some modules > responds to changes in package.json file > typeModule > must match snapshot 1`] = `
-Object {
-  "index.cjs": "commonjs",
-  "index.cts": "commonjs",
-  "index.js": "module",
-  "index.jsx": "module",
-  "index.mjs": "module",
-  "index.mts": "module",
-  "index.ts": "module",
-  "index.tsx": "module",
-}
-`
-
 exports[`test/classify-module.ts > TAP > classify some modules > typeCommonjs > must match snapshot 1`] = `
 Object {
   "index.cjs": "commonjs",

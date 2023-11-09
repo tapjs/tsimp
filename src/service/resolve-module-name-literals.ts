@@ -1,23 +1,29 @@
 import ts from 'typescript'
-import {
-  fileContents,
-  fileVersions,
-  incProjectVersion,
-  rootFileNames,
-} from './file-versions.js'
+import { equivalents } from '../equivalents.js'
+import { addRootFile } from './file-versions.js'
 import { getCanonicalFileName } from './get-canonical-filename.js'
 import { getCurrentDirectory } from './ts-sys-cached.js'
 import { tsconfig } from './tsconfig.js'
 
-// XXX needs reset when tsconfig changes
-const config = tsconfig()
-
-export const moduleResolutionCache = ts.createModuleResolutionCache(
-  getCurrentDirectory(),
-  getCanonicalFileName,
-  config.options,
-  undefined
-)
+// reset cache on config change
+let mrc: ts.ModuleResolutionCache | undefined = undefined
+let config: ts.ParsedCommandLine | undefined = undefined
+export const getModuleResolutionCache = () => {
+  const newConf = tsconfig()
+  if (newConf !== config) {
+    mrc = undefined
+    config = newConf
+  }
+  return (
+    mrc ??
+    (mrc = ts.createModuleResolutionCache(
+      getCurrentDirectory(),
+      getCanonicalFileName,
+      tsconfig().options,
+      undefined
+    ))
+  )
+}
 
 const knownInternalFilenames = new Set<string>()
 const internalBuckets = new Set<string>([''])
@@ -29,10 +35,11 @@ const getModuleBucket = (filename: string) => {
 }
 const markBucketOfFilenameInternal = (filename: string) =>
   internalBuckets.add(getModuleBucket(filename))
-export const isFileInInternalBucket = (filename: string) =>
+const isFileInInternalBucket = (filename: string) =>
   internalBuckets.has(getModuleBucket(filename))
 const isFileKnownToBeInternal = (filename: string) =>
   knownInternalFilenames.has(filename)
+
 const fixupResolvedModule = (
   resolvedModule:
     | ts.ResolvedModule
@@ -60,13 +67,6 @@ const fixupResolvedModule = (
     knownInternalFilenames.add(resolvedFileName)
   }
 }
-
-const tsResolverEquivalents = new Map<string, readonly string[]>([
-  ['.ts', ['.js']],
-  ['.tsx', ['.js', '.jsx']],
-  ['.mts', ['.mjs']],
-  ['.cts', ['.cjs']],
-])
 
 export const getResolveModuleNameLiterals = (
   host: ts.LanguageServiceHost
@@ -110,7 +110,7 @@ export const getResolveModuleNameLiterals = (
         containingFile,
         options,
         host,
-        moduleResolutionCache,
+        getModuleResolutionCache(),
         redirectedReference,
         mode
       )
@@ -119,14 +119,14 @@ export const getResolveModuleNameLiterals = (
         const ext =
           lastDotIndex >= 0 ? moduleName.slice(lastDotIndex) : ''
         if (ext) {
-          const replacements = tsResolverEquivalents.get(ext)
-          for (const replacementExt of replacements ?? []) {
+          const replacements = equivalents(moduleName)
+          for (const rep of replacements) {
             ;({ resolvedModule } = ts.resolveModuleName(
-              moduleName.slice(0, -ext.length) + replacementExt,
+              rep,
               containingFile,
               options,
               host,
-              moduleResolutionCache,
+              getModuleResolutionCache(),
               redirectedReference,
               mode
             ))
@@ -143,24 +143,9 @@ export const getResolveModuleNameLiterals = (
   return resolveModuleNameLiterals
 }
 
-export const updateMemoryCache = (
-  contents: string,
-  fileName: string
-) => {
-  if (
-    !rootFileNames.has(fileName) &&
-    !isFileKnownToBeInternal(fileName)
-  ) {
+export const markFileNameInternal = (fileName: string) => {
+  if (!isFileKnownToBeInternal(fileName)) {
     markBucketOfFilenameInternal(fileName)
-    rootFileNames.add(fileName)
-    incProjectVersion()
   }
-
-  const previousVersion = fileVersions.get(fileName) || 0
-  const previousContents = fileContents.get(fileName)
-  if (contents !== previousContents) {
-    fileVersions.set(fileName, previousVersion + 1)
-    fileContents.set(fileName, contents)
-    incProjectVersion()
-  }
+  addRootFile(fileName)
 }
