@@ -1,10 +1,4 @@
 {
-  // settings for tsimp importer
-  "tsimp": {
-    "compilerOptions": {
-      "resolveJsonModule": false
-    }
-  },
   "compilerOptions": {
     "declaration": true,
     "declarationMap": true,

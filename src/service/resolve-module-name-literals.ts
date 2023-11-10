@@ -1,8 +1,8 @@
 import ts from 'typescript'
 import { equivalents } from '../equivalents.js'
+import { getCurrentDirectory } from '../ts-sys-cached.js'
 import { addRootFile } from './file-versions.js'
 import { getCanonicalFileName } from './get-canonical-filename.js'
-import { getCurrentDirectory } from '../ts-sys-cached.js'
 import { tsconfig } from './tsconfig.js'
 
 // reset cache on config change
@@ -46,10 +46,12 @@ const fixupResolvedModule = (
     | ts.ResolvedTypeReferenceDirective
 ) => {
   const { resolvedFileName } = resolvedModule
+  /* c8 ignore next */
   if (resolvedFileName === undefined) return
   // [MUST_UPDATE_FOR_NEW_FILE_EXTENSIONS]
   // .ts,.mts,.cts is always switched to internal
   // .js is switched on-demand
+  /* c8 ignore start */
   if (
     resolvedModule.isExternalLibraryImport &&
     ((resolvedFileName.endsWith('.ts') &&
@@ -63,6 +65,7 @@ const fixupResolvedModule = (
   ) {
     resolvedModule.isExternalLibraryImport = false
   }
+  /* c8 ignore stop */
   if (!resolvedModule.isExternalLibraryImport) {
     knownInternalFilenames.add(resolvedFileName)
   }
@@ -89,7 +92,6 @@ export const getResolveModuleNameLiterals = (
     containingSourceFile,
     _reusedNames
   ) => {
-    // moduleLiterals[n].text is the equivalent to moduleName string
     return moduleLiterals.map((moduleLiteral, i) => {
       const moduleName = moduleLiteral.text
       const mode = containingSourceFile
@@ -104,7 +106,9 @@ export const getResolveModuleNameLiterals = (
                 | undefined
             }
           ).getModeForResolutionAtIndex?.(containingSourceFile, i)
-        : undefined
+        : /* c8 ignore start */
+          undefined
+      /* c8 ignore stop */
       let { resolvedModule } = ts.resolveModuleName(
         moduleName,
         containingFile,
@@ -119,7 +123,10 @@ export const getResolveModuleNameLiterals = (
         const ext =
           lastDotIndex >= 0 ? moduleName.slice(lastDotIndex) : ''
         if (ext) {
-          const replacements = equivalents(moduleName)
+          const replacements = equivalents(
+            moduleName,
+            mode !== ts.ModuleKind.ESNext
+          )
           for (const rep of replacements) {
             ;({ resolvedModule } = ts.resolveModuleName(
               rep,
