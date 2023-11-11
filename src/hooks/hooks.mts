@@ -1,4 +1,5 @@
-import { readFileSync, writeSync } from 'fs'
+import { writeSync } from 'node:fs'
+import { readFile } from 'node:fs/promises'
 import type {
   GlobalPreloadHook,
   InitializeHook,
@@ -6,13 +7,12 @@ import type {
   ResolveHook,
 } from 'node:module'
 import { resolve as pathResolve } from 'node:path'
-import { fileURLToPath, pathToFileURL } from 'url'
-import { format } from 'util'
-import { MessagePort } from 'worker_threads'
+import { fileURLToPath, pathToFileURL } from 'node:url'
+import { format } from 'node:util'
+import { MessagePort } from 'node:worker_threads'
 import { classifyModule } from '../classify-module.js'
 import { DaemonClient } from '../client.js'
 import { getDiagMode } from '../diagnostic-mode.js'
-import { readFile } from '../ts-sys-cached.js'
 
 // in some cases on the loader thread, console.error doesn't actually
 // print. sync write to fd 1 instead.
@@ -24,8 +24,8 @@ let client: DaemonClient
 const getClient = () => client ?? (client = new DaemonClient())
 
 let pretty = process.stderr.isTTY
+export const getPretty = () => pretty
 export const globalPreload: GlobalPreloadHook = ({ port }) => {
-  //@ts-ignore
   const base = String(new URL(import.meta.url))
   port.on('message', ({ stderrIsTTY }) => (pretty = stderrIsTTY))
   port.unref()
@@ -55,7 +55,12 @@ export const resolve: ResolveHook = async (
   nextResolve
 ) => {
   const { parentURL } = context
-  const target = parentURL ? String(new URL(url, parentURL)) : url
+  const target =
+    /* c8 ignore start */
+    parentURL && (url.startsWith('./') || url.startsWith('../'))
+      ? /* c8 ignore stop */
+        String(new URL(url, parentURL))
+      : url
   return nextResolve(
     target.startsWith('file://') && !target.startsWith(nm)
       ? await getClient().resolve(url, parentURL)
@@ -67,25 +72,28 @@ export const resolve: ResolveHook = async (
 // ts programs have import filenames like ./x.js, but the source
 // lives in ./x.ts. Find the source and compile it.
 const nm = String(pathToFileURL(pathResolve('node_modules'))) + '/'
+const proj = String(pathToFileURL(process.cwd())) + '/'
 let hookedCJS = false
 export const load: LoadHook = async (url, context, nextLoad) => {
-  if (url.startsWith('file://') && !url.startsWith(nm)) {
+  if (url.startsWith(proj) && !url.startsWith(nm)) {
     const inputFile = fileURLToPath(url)
     const { fileName, diagnostics } = await getClient().compile(
       inputFile,
       diagMode,
       pretty
     )
-    if (diagnostics.length) {
-      for (const d of diagnostics) consoleError(d)
-    }
+    for (const d of diagnostics) consoleError(d)
     if (!fileName) {
-      throw new Error('compile failure')
+      throw Object.assign(new Error('compile failure'), {
+        code: 'E_TSIMP_COMPILE_FAILURE',
+        url,
+        context,
+      })
     }
     const format = classifyModule(inputFile)
     hookedCJS ||= format === 'commonjs'
     return {
-      source: readFileSync(fileName, 'utf8'),
+      source: await readFile(fileName, 'utf8'),
       shortCircuit: true,
       format,
     }
@@ -96,7 +104,7 @@ export const load: LoadHook = async (url, context, nextLoad) => {
   // See: https://github.com/nodejs/node/issues/50435
   const result = await nextLoad(url, context)
   if (hookedCJS && result.format === 'commonjs' && !result.source) {
-    result.source = readFile(fileURLToPath(url))
+    result.source = await readFile(fileURLToPath(url), 'utf8')
   }
   return result
 }

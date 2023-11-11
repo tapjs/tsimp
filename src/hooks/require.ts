@@ -9,59 +9,51 @@ import { getOutputFile } from '../get-output-file.js'
 import { requireCommonJSLoad } from '../require-commonjs-load.js'
 import { fileExists, readFile } from '../ts-sys-cached.js'
 
-const nodeVersion = process.versions.node
-  .split('.')
-  .map(n => Number(n))
-
 let svcLoad: typeof import('../service/load.js') | undefined =
   undefined
 const diagMode = getDiagMode()
 
 const ModuleWithLoad = Module as typeof Module & {
-  _load: (request: string, parent: Module, isMain: boolean) => any
-  _resolveFilename: (specifier: string, module: Module) => any
+  _resolveFilename: (specifier: string, parent?: Module) => any
 }
 
-// We have to hijack Module._load because the module specifier does
-// not match the actual filename.
 const { _resolveFilename: originalResolve } = ModuleWithLoad
-
-const consoleError = (...msg: any[]) =>
-  writeSync(1, format(...msg) + '\n')
 
 // As of node 21, we still must patch this method, because it is
 // called *prior* to the resolve hook for require(), and will fail
 // if it ends up pointing to a file that doesn't exist, even though
 // the load hook can load it just fine.
-ModuleWithLoad._resolveFilename = (request, parent) => {
-  if (
-    parent &&
-    (request.startsWith('../') || request.startsWith('./'))
-  ) {
-    const target = resolve(dirname(parent.filename), request)
-    const equiv = equivalents(target, true)
-    if (equiv && !fileExists(target)) {
-      for (const target of equiv) {
-        if (fileExists(target)) {
-          return originalResolve(target, parent)
+Object.assign(Module, {
+  _resolveFilename: (request: string, parent?: Module) => {
+    if (
+      parent &&
+      (request.startsWith('../') || request.startsWith('./'))
+    ) {
+      const target = resolve(dirname(parent.filename), request)
+      const equiv = equivalents(target, true)
+      if (equiv && !fileExists(target)) {
+        for (const target of equiv) {
+          if (fileExists(target)) {
+            return originalResolve(target, parent)
+          }
         }
       }
     }
-  }
-  return originalResolve(request, parent)
-}
+    return originalResolve(request, parent)
+  },
+})
 
 // Note: this incurs a *significant* per-process overhead if we need to
 // do the actual compilation! Thankfully, by the time this is hit, we've
 // probably already precompiled it in the resolve hook.
 // Only add this hook if we're on a node version that cannot provide
-// source in the load hook for commonjs.
-if (
-  !nodeVersion[0] ||
-  !nodeVersion[1] ||
-  nodeVersion[0] < 20 ||
-  (nodeVersion[0] === 20 && nodeVersion[1] < 6)
-) {
+// source in the load hook for commonjs. This functionality was added
+// at the same time as --import and Module.register, so test that.
+/* c8 ignore start */
+if (typeof Module.register !== 'function') {
+  const consoleError = (...msg: any[]) =>
+    writeSync(1, format(...msg) + '\n')
+
   addHook(
     (code, fileName) => {
       if (fileName.endsWith('.js') && code) return code
@@ -83,3 +75,4 @@ if (
     { exts: ['.ts', '.cts'], ignoreNodeModules: true }
   )
 }
+/* c8 ignore stop */
