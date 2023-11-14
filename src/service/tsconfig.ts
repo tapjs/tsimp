@@ -10,8 +10,9 @@ import ts from 'typescript'
 import { walkUp } from 'walk-up-path'
 import { error, warn } from '../debug.js'
 import { report } from './diagnostic.js'
-import { getCurrentDirectory, readFile } from '../ts-sys-cached.js'
+import { readFile } from '../ts-sys-cached.js'
 
+const cwd = process.cwd()
 const filename = process.env.TSIMP_PROJECT || 'tsconfig.json'
 
 let loadedConfig: ts.ParsedCommandLine
@@ -42,7 +43,7 @@ export const tsconfig = () => {
     }
   }
 
-  for (const dir of walkUp(getCurrentDirectory())) {
+  for (const dir of walkUp(cwd)) {
     configPath = resolve(dir, filename)
     const readResult = ts.readConfigFile(configPath, readFile)
     const {
@@ -108,7 +109,7 @@ export const tsconfig = () => {
     return (loadedConfig = newConfig)
   }
   error(
-    `could not find config file named "${filename}", searching from "${getCurrentDirectory()}"`
+    `could not find config file named "${filename}", searching from "${cwd}"`
   )
   process.exit(1)
 }

@@ -6,6 +6,7 @@
 
 import ts from 'typescript'
 import { classifyModule } from '../classify-module.js'
+import { normalizeSlashes } from '../ts-sys-cached.js'
 import { getOutputTypeCheck } from './get-output-typecheck.js'
 import {
   getOutputForceCommonJS,
@@ -20,20 +21,23 @@ export const compile = (
   typeCheck = true
 ) => {
   const config = tsconfig()
-  const shouldOverwriteEmitWhenForcingCommonJS =
-    config.options.module !== ts.ModuleKind.CommonJS
+  // if the module config is node(16|next), then we'll get what it
+  // is classified as anyway.
+  const shouldOverwriteEmitWhenForcingCommonJS = !(
+    config.options.module === ts.ModuleKind.CommonJS ||
+    config.options.module === ts.ModuleKind.Node16 ||
+    config.options.module === ts.ModuleKind.NodeNext
+  )
   const shouldOverwriteEmitWhenForcingEsm = !(
     config.options.module === ts.ModuleKind.ES2015 ||
-    (ts.ModuleKind.ES2020 &&
-      config.options.module === ts.ModuleKind.ES2020) ||
-    (ts.ModuleKind.ES2022 &&
-      config.options.module === ts.ModuleKind.ES2022) ||
-    config.options.module === ts.ModuleKind.ESNext
+    config.options.module === ts.ModuleKind.ES2020 ||
+    config.options.module === ts.ModuleKind.ES2022 ||
+    config.options.module === ts.ModuleKind.ESNext ||
+    config.options.module === ts.ModuleKind.Node16 ||
+    config.options.module === ts.ModuleKind.NodeNext
   )
 
-  const normalizedFileName: string = (ts as any).normalizeSlashes(
-    fileName
-  )
+  const normalizedFileName: string = normalizeSlashes(fileName)
   const classification = classifyModule(normalizedFileName)
   const getOutput = typeCheck
     ? getOutputTypeCheck
@@ -46,32 +50,25 @@ export const compile = (
 
   const emitSkipped = outputText === undefined
 
-  // If module classification contradicts the above, call the relevant transpiler
-  if (
-    classification === 'commonjs' &&
-    (shouldOverwriteEmitWhenForcingCommonJS || emitSkipped)
-  ) {
-    outputText = getOutputForceCommonJS(
-      code,
-      normalizedFileName
-    ).outputText
-  } else if (
-    classification === 'module' &&
-    (shouldOverwriteEmitWhenForcingEsm || emitSkipped)
-  ) {
-    outputText = getOutputForceESM(
-      code,
-      normalizedFileName
-    ).outputText
-  } else if (emitSkipped) {
-    // Happens when ts compiler skips emit or in transpileOnly mode
-    const classification = classifyModule(fileName)
-    outputText =
-      classification === 'commonjs'
-        ? getOutputForceCommonJS(code, normalizedFileName).outputText
-        : classification === 'module'
-        ? getOutputForceESM(code, normalizedFileName).outputText
-        : getOutputTranspileOnly(code, normalizedFileName).outputText
+  // If module classification contradicts the module config,
+  // call the relevant transpile-only method
+  switch (classification) {
+    case 'commonjs':
+      if (shouldOverwriteEmitWhenForcingCommonJS || emitSkipped) {
+        return {
+          ...getOutputForceCommonJS(code, normalizedFileName),
+          diagnostics,
+        }
+      }
+      break
+    case 'module':
+      if (shouldOverwriteEmitWhenForcingEsm || emitSkipped) {
+        return {
+          ...getOutputForceESM(code, normalizedFileName),
+          diagnostics,
+        }
+      }
+      break
   }
 
   return { outputText, diagnostics }
