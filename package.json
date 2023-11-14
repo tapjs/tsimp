@@ -40,7 +40,10 @@
     "pretest": "npm run prepare",
     "presnap": "npm run prepare",
     "snap": "tap",
-    "test": "tap"
+    "test": "tap",
+    "postversion": "npm publish",
+    "prepublishOnly": "git push origin --follow-tags",
+    "typedoc": "typedoc"
   },
   "dependencies": {
     "@isaacs/cached": "^1.0.1",
@@ -59,12 +62,10 @@
   "devDependencies": {
     "@types/node": "^20.8.4",
     "chalk": "^5.3.0",
-    "perfalize": "^1.0.1",
     "prettier": "^2.8.8",
     "tap": "^18.5.7",
-    "ts-node": "^10.9.1",
     "tshy": "^1.8.0",
-    "tsx": "^3.13.0",
+    "typedoc": "^0.25.3",
     "typescript": "^5.2.2"
   },
   "prettier": {

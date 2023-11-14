@@ -1,0 +1,6 @@
+/dist
+/.tap
+/.attic
+/docs
+/node_modules
+/.tsimp
