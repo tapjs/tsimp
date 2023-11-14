@@ -23,8 +23,8 @@ const diagMode = getDiagMode()
 let client: DaemonClient
 const getClient = () => client ?? (client = new DaemonClient())
 
-let pretty = process.stderr.isTTY
-export const getPretty = () => pretty
+let pretty = !!process.stderr.isTTY
+export const getPretty = () => !!pretty
 export const globalPreload: GlobalPreloadHook = ({ port }) => {
   const base = String(new URL(import.meta.url))
   port.on('message', ({ stderrIsTTY }) => (pretty = stderrIsTTY))
