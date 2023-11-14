@@ -9,8 +9,8 @@ import { resolve } from 'path'
 import ts from 'typescript'
 import { walkUp } from 'walk-up-path'
 import { error, warn } from '../debug.js'
-import { report } from './diagnostic.js'
 import { readFile } from '../ts-sys-cached.js'
+import { report } from './diagnostic.js'
 
 const cwd = process.cwd()
 const filename = process.env.TSIMP_PROJECT || 'tsconfig.json'
@@ -22,7 +22,8 @@ let loadedConfigJSON: string
 // overridable just so we can test it without waiting 100ms per test
 // in practice, this is more than fast enough for most cases.
 /* c8 ignore start */
-const STAT_FREQ = Number(process.env.TSIMP_CONFIG_DEBOUNCE ?? 100) || 100
+const STAT_FREQ =
+  Number(process.env.TSIMP_CONFIG_DEBOUNCE ?? 100) || 100
 /* c8 ignore stop */
 let lastStat: number = -1 * STAT_FREQ
 let mtime: number = -1
@@ -38,9 +39,11 @@ export const tsconfig = () => {
         lastStat = performance.now()
         return loadedConfig
       }
+      /* c8 ignore start */
     } else {
       return loadedConfig
     }
+    /* c8 ignore stop */
   }
 
   for (const dir of walkUp(cwd)) {
