@@ -5,17 +5,17 @@ import { writeFileSync } from 'fs'
 import { mkdirpSync } from 'mkdirp'
 import { relative, resolve } from 'path'
 import { ParsedCommandLine } from 'typescript'
-import {info} from '../debug.js'
+import { info } from '../debug.js'
 import { getOutputFile } from '../get-output-file.js'
-import { CompileResult } from '../types.js'
-import { compile } from './compile.js'
-import { reportAll } from './diagnostic.js'
 import {
   fileExists,
   getCurrentDirectory,
   normalizeSlashes,
   readFile,
 } from '../ts-sys-cached.js'
+import { CompileResult } from '../types.js'
+import { compile } from './compile.js'
+import { reportAll } from './diagnostic.js'
 import { tsconfig } from './tsconfig.js'
 
 let lastConfig: ParsedCommandLine
@@ -30,6 +30,7 @@ export const load = (
 ): CompileResult => {
   fileName = resolve(fileName)
   const config = tsconfig()
+
   if (lastConfig && config !== lastConfig) {
     compileTypeCheck.cache.clear()
     compileTranspileOnly.cache.clear()
@@ -37,12 +38,14 @@ export const load = (
     compileTranspileOnly.mtimeCache.clear()
   }
   lastConfig = config
+
   // compile to a file on disk, but only if the source has changed.
   const compile = typeCheck ? compileTypeCheck : compileTranspileOnly
   const cachedMtime = compile.mtimeCache.get(fileName)?.[0]
   const newMtime = compile.getMtime(fileName)
   const outFile = getOutputFile(fileName)
   const cachedResult = compile.cache.get(fileName)
+
   if (
     cachedMtime &&
     cachedMtime === newMtime &&
@@ -55,37 +58,43 @@ export const load = (
       diagnostics: reportAll(cachedResult.diagnostics, pretty),
     }
   }
+
   // have to perform the compilation
   const start = performance.now()
   const { outputText, diagnostics } = compile(fileName)
   const duration =
     Math.floor((performance.now() - start) * 1000) / 1000
-  info('compiled', [
-    relative(process.cwd(), fileName),
-    duration,
-  ])
-  if (outputText) {
-    if (!didMkdirp) {
-      didMkdirp = true
-      mkdirpSync(resolve(cwd, '.tsimp/compiled'))
-    }
-    writeFileSync(outFile, outputText)
-    return {
-      fileName: outFile,
-      diagnostics: reportAll(diagnostics, pretty),
-    }
+  info('compiled', [relative(process.cwd(), fileName), duration])
+
+  /* c8 ignore start */
+  if (!outputText) {
+    return { diagnostics: reportAll(diagnostics, pretty) }
   }
-  return { diagnostics: reportAll(diagnostics, pretty) }
+  /* c8 ignore stop */
+
+  if (!didMkdirp) {
+    didMkdirp = true
+    mkdirpSync(resolve(cwd, '.tsimp/compiled'))
+  }
+  writeFileSync(outFile, outputText)
+  return {
+    fileName: outFile,
+    diagnostics: reportAll(diagnostics, pretty),
+  }
 }
 
 const compileTypeCheck = cachedMtime((fileName: string) => {
   const normalizedFileName: string = normalizeSlashes(fileName)
-  return compile(readFile(fileName) || '', normalizedFileName, true)
+  /* c8 ignore next */
+  const content = readFile(fileName) || ''
+  return compile(content, normalizedFileName, true)
 })
 
 const compileTranspileOnly = cachedMtime((fileName: string) => {
   const normalizedFileName: string = normalizeSlashes(fileName)
-  return compile(readFile(fileName) || '', normalizedFileName, false)
+  /* c8 ignore next */
+  const content = readFile(fileName) || ''
+  return compile(content, normalizedFileName, false)
 })
 
 export const loadTypeCheck = (path: string) => load(path, true)

@@ -6,8 +6,8 @@ import { info, warn } from '../debug.js'
 import { addRootFile, updateFileVersion } from './file-versions.js'
 import { getLanguageService } from './language-service.js'
 import { markFileNameInternal } from './resolve-module-name-literals.js'
-import { getCurrentDirectory } from '../ts-sys-cached.js'
 
+const cwd = process.cwd()
 export const getOutputTypeCheck = (
   code: string,
   fileName: string
@@ -18,10 +18,11 @@ export const getOutputTypeCheck = (
   const start = performance.now()
   const service = getLanguageService()
   const initialProgram = service.getProgram()
+  /* c8 ignore start */
   if (!initialProgram) {
     throw new Error('failed to load TS program')
   }
-  const cwd = getCurrentDirectory()
+  /* c8 ignore stop */
   addRootFile(fileName)
   markFileNameInternal(fileName)
   updateFileVersion(fileName, code)
@@ -31,6 +32,7 @@ export const getOutputTypeCheck = (
   const programBefore = service.getProgram()
   const sf = programBefore?.getSourceFile(fileName)
 
+  /* c8 ignore start */
   if (!sf) {
     warn('could not get sourceFile, returning raw contents', fileName)
     return {
@@ -38,6 +40,7 @@ export const getOutputTypeCheck = (
       diagnostics: [],
     }
   }
+  /* c8 ignore stop */
 
   if (initialProgram && programBefore !== initialProgram) {
     info('compiler rebuilt Program', fileName)
@@ -55,11 +58,11 @@ export const getOutputTypeCheck = (
   }
 
   try {
+    // these errors *should* be impossible.
+    /* c8 ignore start */
     if (output.emitSkipped) {
       return { outputText: undefined, diagnostics }
     }
-
-    // Throw an error when requiring `.d.ts` files.
     if (output.outputFiles.length === 0) {
       throw new TypeError(
         `Unable to require file: ${relative(cwd, fileName)}\n` +
@@ -68,6 +71,7 @@ export const getOutputTypeCheck = (
           'extension with loader attached before `tsimp` available.'
       )
     }
+    /* c8 ignore stop */
 
     return {
       outputText: output.outputFiles[0]?.text,
