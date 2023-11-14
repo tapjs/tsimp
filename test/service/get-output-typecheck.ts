@@ -64,14 +64,28 @@ for (const tsconfigModule of ['commonjs', 'esnext', 'nodenext']) {
               content,
               `${dir}/${file}`
             )
-            const d = diagnostics.map(d => [
-              d.file && basename(d.file.fileName),
-              d.code,
-              typeof d.messageText === 'object'
-                ? d.messageText.messageText
-                : d.messageText,
-            ])
-            t.matchSnapshot(outputText, 'compiled')
+            const d = diagnostics
+              .map(
+                d =>
+                  [
+                    d.file && basename(d.file.fileName),
+                    d.code,
+                    typeof d.messageText === 'object'
+                      ? d.messageText.messageText
+                      : d.messageText,
+                  ] as [string, number, string]
+              )
+              .sort(
+                ([a, aa], [b, bb]) =>
+                  a.localeCompare(b, 'en') || aa - bb
+              )
+            t.matchSnapshot(
+              outputText?.replace(
+                /# sourceMappingURL=.*/,
+                '# sourceMappingURL='
+              ),
+              'compiled'
+            )
             t.matchSnapshot(d, 'diagnostics')
           })
         }
