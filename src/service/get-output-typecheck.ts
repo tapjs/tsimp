@@ -3,7 +3,7 @@
 import { relative } from 'path'
 import type ts from 'typescript'
 import { info, warn } from '../debug.js'
-import { updateFileVersion } from './file-versions.js'
+import { addRootFile, updateFileVersion } from './file-versions.js'
 import { getLanguageService } from './language-service.js'
 import { markFileNameInternal } from './resolve-module-name-literals.js'
 import { getCurrentDirectory } from '../ts-sys-cached.js'
@@ -22,12 +22,15 @@ export const getOutputTypeCheck = (
     throw new Error('failed to load TS program')
   }
   const cwd = getCurrentDirectory()
+  addRootFile(fileName)
   markFileNameInternal(fileName)
   updateFileVersion(fileName, code)
 
   // if we can't get the source file, then return the code un-compiled.
   // Eg, loading a JS file if allowJs is not set.
-  const sf = initialProgram.getSourceFile(fileName)
+  const programBefore = service.getProgram()
+  const sf = programBefore?.getSourceFile(fileName)
+
   if (!sf) {
     warn('could not get sourceFile, returning raw contents', fileName)
     return {
@@ -36,7 +39,6 @@ export const getOutputTypeCheck = (
     }
   }
 
-  const programBefore = service.getProgram()
   if (initialProgram && programBefore !== initialProgram) {
     info('compiler rebuilt Program', fileName)
   }
