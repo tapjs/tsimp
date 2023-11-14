@@ -71,8 +71,6 @@ export const tsconfig = () => {
       {
         compilerOptions: {
           rootDir: dir,
-          module: 'nodenext',
-          moduleResolution: 'nodenext',
           skipLibCheck: true,
           isolatedModules: true,
           esModuleInterop: true,
@@ -89,6 +87,8 @@ export const tsconfig = () => {
           // settings that tsimp depends on, cannot be overridden
           // virtual folder, nothing actually written to disk ever
           outDir: resolve('.tsimp-compiled'),
+          module: 'nodenext',
+          moduleResolution: 'nodenext',
           sourceMap: undefined,
           inlineSourceMap: true,
           inlineSources: false,
