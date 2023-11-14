@@ -15,13 +15,7 @@ exports.dialect = 'commonjs';
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=commonjs > package.json type=commonjs > typeCheck=false > commonjs.cts > diagnostics 1`] = `
-Array [
-  Array [
-    undefined,
-    6059,
-    "File '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-commonjs-typeCheck-false/commonjs.cts' is not under 'rootDir' '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-true'. 'rootDir' is expected to contain all source files.",
-  ],
-]
+Array []
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=commonjs > package.json type=commonjs > typeCheck=false > esm.mts > compiled 1`] = `
@@ -31,13 +25,7 @@ export const dialect = 'esm';
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=commonjs > package.json type=commonjs > typeCheck=false > esm.mts > diagnostics 1`] = `
-Array [
-  Array [
-    undefined,
-    6059,
-    "File '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-commonjs-typeCheck-false/esm.mts' is not under 'rootDir' '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-true'. 'rootDir' is expected to contain all source files.",
-  ],
-]
+Array []
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=commonjs > package.json type=commonjs > typeCheck=false > file.ts > compiled 1`] = `
@@ -49,13 +37,7 @@ console.error(f);
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=commonjs > package.json type=commonjs > typeCheck=false > file.ts > diagnostics 1`] = `
-Array [
-  Array [
-    undefined,
-    6059,
-    "File '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-commonjs-typeCheck-false/file.ts' is not under 'rootDir' '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-true'. 'rootDir' is expected to contain all source files.",
-  ],
-]
+Array []
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=commonjs > package.json type=commonjs > typeCheck=false > foo.ts > compiled 1`] = `
@@ -65,13 +47,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=commonjs > package.json type=commonjs > typeCheck=false > foo.ts > diagnostics 1`] = `
-Array [
-  Array [
-    undefined,
-    6059,
-    "File '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-commonjs-typeCheck-false/foo.ts' is not under 'rootDir' '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-true'. 'rootDir' is expected to contain all source files.",
-  ],
-]
+Array []
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=commonjs > package.json type=commonjs > typeCheck=false > mixed.ts > compiled 1`] = `
@@ -86,13 +62,7 @@ require("./commonjs.cjs");
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=commonjs > package.json type=commonjs > typeCheck=false > mixed.ts > diagnostics 1`] = `
-Array [
-  Array [
-    undefined,
-    6059,
-    "File '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-commonjs-typeCheck-false/mixed.ts' is not under 'rootDir' '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-true'. 'rootDir' is expected to contain all source files.",
-  ],
-]
+Array []
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=commonjs > package.json type=commonjs > typeCheck=true > commonjs.cts > compiled 1`] = `
@@ -176,13 +146,7 @@ exports.dialect = 'commonjs';
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=commonjs > package.json type=module > typeCheck=false > commonjs.cts > diagnostics 1`] = `
-Array [
-  Array [
-    undefined,
-    6059,
-    "File '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-false/commonjs.cts' is not under 'rootDir' '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-true'. 'rootDir' is expected to contain all source files.",
-  ],
-]
+Array []
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=commonjs > package.json type=module > typeCheck=false > esm.mts > compiled 1`] = `
@@ -192,13 +156,7 @@ export const dialect = 'esm';
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=commonjs > package.json type=module > typeCheck=false > esm.mts > diagnostics 1`] = `
-Array [
-  Array [
-    undefined,
-    6059,
-    "File '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-false/esm.mts' is not under 'rootDir' '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-true'. 'rootDir' is expected to contain all source files.",
-  ],
-]
+Array []
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=commonjs > package.json type=module > typeCheck=false > file.ts > compiled 1`] = `
@@ -209,13 +167,7 @@ export {};
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=commonjs > package.json type=module > typeCheck=false > file.ts > diagnostics 1`] = `
-Array [
-  Array [
-    undefined,
-    6059,
-    "File '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-false/file.ts' is not under 'rootDir' '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-true'. 'rootDir' is expected to contain all source files.",
-  ],
-]
+Array []
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=commonjs > package.json type=module > typeCheck=false > foo.ts > compiled 1`] = `
@@ -224,13 +176,7 @@ export {};
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=commonjs > package.json type=module > typeCheck=false > foo.ts > diagnostics 1`] = `
-Array [
-  Array [
-    undefined,
-    6059,
-    "File '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-false/foo.ts' is not under 'rootDir' '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-true'. 'rootDir' is expected to contain all source files.",
-  ],
-]
+Array []
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=commonjs > package.json type=module > typeCheck=false > mixed.ts > compiled 1`] = `
@@ -243,13 +189,7 @@ import './commonjs.cjs';
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=commonjs > package.json type=module > typeCheck=false > mixed.ts > diagnostics 1`] = `
-Array [
-  Array [
-    undefined,
-    6059,
-    "File '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-false/mixed.ts' is not under 'rootDir' '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-true'. 'rootDir' is expected to contain all source files.",
-  ],
-]
+Array []
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=commonjs > package.json type=module > typeCheck=true > commonjs.cts > compiled 1`] = `
@@ -318,13 +258,7 @@ exports.dialect = 'commonjs';
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=esnext > package.json type=commonjs > typeCheck=false > commonjs.cts > diagnostics 1`] = `
-Array [
-  Array [
-    undefined,
-    6059,
-    "File '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-esnext-package.json-type-commonjs-typeCheck-false/commonjs.cts' is not under 'rootDir' '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-true'. 'rootDir' is expected to contain all source files.",
-  ],
-]
+Array []
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=esnext > package.json type=commonjs > typeCheck=false > esm.mts > compiled 1`] = `
@@ -334,13 +268,7 @@ export const dialect = 'esm';
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=esnext > package.json type=commonjs > typeCheck=false > esm.mts > diagnostics 1`] = `
-Array [
-  Array [
-    undefined,
-    6059,
-    "File '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-esnext-package.json-type-commonjs-typeCheck-false/esm.mts' is not under 'rootDir' '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-true'. 'rootDir' is expected to contain all source files.",
-  ],
-]
+Array []
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=esnext > package.json type=commonjs > typeCheck=false > file.ts > compiled 1`] = `
@@ -352,13 +280,7 @@ console.error(f);
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=esnext > package.json type=commonjs > typeCheck=false > file.ts > diagnostics 1`] = `
-Array [
-  Array [
-    undefined,
-    6059,
-    "File '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-esnext-package.json-type-commonjs-typeCheck-false/file.ts' is not under 'rootDir' '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-true'. 'rootDir' is expected to contain all source files.",
-  ],
-]
+Array []
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=esnext > package.json type=commonjs > typeCheck=false > foo.ts > compiled 1`] = `
@@ -368,13 +290,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=esnext > package.json type=commonjs > typeCheck=false > foo.ts > diagnostics 1`] = `
-Array [
-  Array [
-    undefined,
-    6059,
-    "File '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-esnext-package.json-type-commonjs-typeCheck-false/foo.ts' is not under 'rootDir' '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-true'. 'rootDir' is expected to contain all source files.",
-  ],
-]
+Array []
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=esnext > package.json type=commonjs > typeCheck=false > mixed.ts > compiled 1`] = `
@@ -389,13 +305,7 @@ require("./commonjs.cjs");
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=esnext > package.json type=commonjs > typeCheck=false > mixed.ts > diagnostics 1`] = `
-Array [
-  Array [
-    undefined,
-    6059,
-    "File '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-esnext-package.json-type-commonjs-typeCheck-false/mixed.ts' is not under 'rootDir' '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-true'. 'rootDir' is expected to contain all source files.",
-  ],
-]
+Array []
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=esnext > package.json type=commonjs > typeCheck=true > commonjs.cts > compiled 1`] = `
@@ -479,13 +389,7 @@ exports.dialect = 'commonjs';
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=esnext > package.json type=module > typeCheck=false > commonjs.cts > diagnostics 1`] = `
-Array [
-  Array [
-    undefined,
-    6059,
-    "File '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-esnext-package.json-type-module-typeCheck-false/commonjs.cts' is not under 'rootDir' '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-true'. 'rootDir' is expected to contain all source files.",
-  ],
-]
+Array []
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=esnext > package.json type=module > typeCheck=false > esm.mts > compiled 1`] = `
@@ -495,13 +399,7 @@ export const dialect = 'esm';
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=esnext > package.json type=module > typeCheck=false > esm.mts > diagnostics 1`] = `
-Array [
-  Array [
-    undefined,
-    6059,
-    "File '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-esnext-package.json-type-module-typeCheck-false/esm.mts' is not under 'rootDir' '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-true'. 'rootDir' is expected to contain all source files.",
-  ],
-]
+Array []
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=esnext > package.json type=module > typeCheck=false > file.ts > compiled 1`] = `
@@ -512,13 +410,7 @@ export {};
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=esnext > package.json type=module > typeCheck=false > file.ts > diagnostics 1`] = `
-Array [
-  Array [
-    undefined,
-    6059,
-    "File '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-esnext-package.json-type-module-typeCheck-false/file.ts' is not under 'rootDir' '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-true'. 'rootDir' is expected to contain all source files.",
-  ],
-]
+Array []
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=esnext > package.json type=module > typeCheck=false > foo.ts > compiled 1`] = `
@@ -527,13 +419,7 @@ export {};
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=esnext > package.json type=module > typeCheck=false > foo.ts > diagnostics 1`] = `
-Array [
-  Array [
-    undefined,
-    6059,
-    "File '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-esnext-package.json-type-module-typeCheck-false/foo.ts' is not under 'rootDir' '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-true'. 'rootDir' is expected to contain all source files.",
-  ],
-]
+Array []
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=esnext > package.json type=module > typeCheck=false > mixed.ts > compiled 1`] = `
@@ -546,13 +432,7 @@ import './commonjs.cjs';
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=esnext > package.json type=module > typeCheck=false > mixed.ts > diagnostics 1`] = `
-Array [
-  Array [
-    undefined,
-    6059,
-    "File '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-esnext-package.json-type-module-typeCheck-false/mixed.ts' is not under 'rootDir' '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-true'. 'rootDir' is expected to contain all source files.",
-  ],
-]
+Array []
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=esnext > package.json type=module > typeCheck=true > commonjs.cts > compiled 1`] = `
@@ -621,13 +501,7 @@ exports.dialect = 'commonjs';
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=nodenext > package.json type=commonjs > typeCheck=false > commonjs.cts > diagnostics 1`] = `
-Array [
-  Array [
-    undefined,
-    6059,
-    "File '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-nodenext-package.json-type-commonjs-typeCheck-false/commonjs.cts' is not under 'rootDir' '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-true'. 'rootDir' is expected to contain all source files.",
-  ],
-]
+Array []
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=nodenext > package.json type=commonjs > typeCheck=false > esm.mts > compiled 1`] = `
@@ -637,13 +511,7 @@ export const dialect = 'esm';
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=nodenext > package.json type=commonjs > typeCheck=false > esm.mts > diagnostics 1`] = `
-Array [
-  Array [
-    undefined,
-    6059,
-    "File '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-nodenext-package.json-type-commonjs-typeCheck-false/esm.mts' is not under 'rootDir' '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-true'. 'rootDir' is expected to contain all source files.",
-  ],
-]
+Array []
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=nodenext > package.json type=commonjs > typeCheck=false > file.ts > compiled 1`] = `
@@ -655,13 +523,7 @@ console.error(f);
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=nodenext > package.json type=commonjs > typeCheck=false > file.ts > diagnostics 1`] = `
-Array [
-  Array [
-    undefined,
-    6059,
-    "File '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-nodenext-package.json-type-commonjs-typeCheck-false/file.ts' is not under 'rootDir' '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-true'. 'rootDir' is expected to contain all source files.",
-  ],
-]
+Array []
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=nodenext > package.json type=commonjs > typeCheck=false > foo.ts > compiled 1`] = `
@@ -671,13 +533,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=nodenext > package.json type=commonjs > typeCheck=false > foo.ts > diagnostics 1`] = `
-Array [
-  Array [
-    undefined,
-    6059,
-    "File '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-nodenext-package.json-type-commonjs-typeCheck-false/foo.ts' is not under 'rootDir' '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-true'. 'rootDir' is expected to contain all source files.",
-  ],
-]
+Array []
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=nodenext > package.json type=commonjs > typeCheck=false > mixed.ts > compiled 1`] = `
@@ -692,13 +548,7 @@ require("./commonjs.cjs");
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=nodenext > package.json type=commonjs > typeCheck=false > mixed.ts > diagnostics 1`] = `
-Array [
-  Array [
-    undefined,
-    6059,
-    "File '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-nodenext-package.json-type-commonjs-typeCheck-false/mixed.ts' is not under 'rootDir' '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-true'. 'rootDir' is expected to contain all source files.",
-  ],
-]
+Array []
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=nodenext > package.json type=commonjs > typeCheck=true > commonjs.cts > compiled 1`] = `
@@ -782,13 +632,7 @@ exports.dialect = 'commonjs';
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=nodenext > package.json type=module > typeCheck=false > commonjs.cts > diagnostics 1`] = `
-Array [
-  Array [
-    undefined,
-    6059,
-    "File '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-nodenext-package.json-type-module-typeCheck-false/commonjs.cts' is not under 'rootDir' '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-true'. 'rootDir' is expected to contain all source files.",
-  ],
-]
+Array []
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=nodenext > package.json type=module > typeCheck=false > esm.mts > compiled 1`] = `
@@ -798,13 +642,7 @@ export const dialect = 'esm';
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=nodenext > package.json type=module > typeCheck=false > esm.mts > diagnostics 1`] = `
-Array [
-  Array [
-    undefined,
-    6059,
-    "File '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-nodenext-package.json-type-module-typeCheck-false/esm.mts' is not under 'rootDir' '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-true'. 'rootDir' is expected to contain all source files.",
-  ],
-]
+Array []
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=nodenext > package.json type=module > typeCheck=false > file.ts > compiled 1`] = `
@@ -815,13 +653,7 @@ export {};
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=nodenext > package.json type=module > typeCheck=false > file.ts > diagnostics 1`] = `
-Array [
-  Array [
-    undefined,
-    6059,
-    "File '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-nodenext-package.json-type-module-typeCheck-false/file.ts' is not under 'rootDir' '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-true'. 'rootDir' is expected to contain all source files.",
-  ],
-]
+Array []
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=nodenext > package.json type=module > typeCheck=false > foo.ts > compiled 1`] = `
@@ -830,13 +662,7 @@ export {};
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=nodenext > package.json type=module > typeCheck=false > foo.ts > diagnostics 1`] = `
-Array [
-  Array [
-    undefined,
-    6059,
-    "File '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-nodenext-package.json-type-module-typeCheck-false/foo.ts' is not under 'rootDir' '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-true'. 'rootDir' is expected to contain all source files.",
-  ],
-]
+Array []
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=nodenext > package.json type=module > typeCheck=false > mixed.ts > compiled 1`] = `
@@ -849,13 +675,7 @@ import './commonjs.cjs';
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=nodenext > package.json type=module > typeCheck=false > mixed.ts > diagnostics 1`] = `
-Array [
-  Array [
-    undefined,
-    6059,
-    "File '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-nodenext-package.json-type-module-typeCheck-false/mixed.ts' is not under 'rootDir' '{CWD}/.tap/fixtures/test-service-compile.ts-tsconfig-module-commonjs-package.json-type-module-typeCheck-true'. 'rootDir' is expected to contain all source files.",
-  ],
-]
+Array []
 `
 
 exports[`test/service/compile.ts > TAP > tsconfig module=nodenext > package.json type=module > typeCheck=true > commonjs.cts > compiled 1`] = `

@@ -1,21 +1,21 @@
 // get output functions to transpile TS code without typechecking
+// Note: this is only used when forcing a given compilation target
+// if the emit was skipped, or when diagnostics are suppressed with
+// TSIMP_DIAG=ignore, so we don't even bother collecting diagnostics.
+import {catcher} from '@isaacs/catcher'
 import { dirname } from 'path'
 import ts from 'typescript'
 import { walkUp } from 'walk-up-path'
-import { report } from './diagnostic.js'
 import { normalizePath, readFile } from '../ts-sys-cached.js'
 import { tsconfig } from './tsconfig.js'
 
-// The technique here is lifted from ts-node's transpileOnly method
-// We create a CompilerHost, and mock the loading of package.json
+// Basic technique lifted from ts-node's transpileOnly method.
+// Create a CompilerHost, and mock the loading of package.json
 // in order to tell it to use the appropriate module type.
-
-const config = tsconfig()
 
 export type NodeModuleEmitKind = 'nodeesm' | 'nodecjs'
 
 const createTranspileOnlyGetOutputFunction = (
-  overrideModuleType?: ts.ModuleKind,
   nodeModuleEmitKind?: NodeModuleEmitKind
 ): ((
   code: string,
@@ -24,18 +24,16 @@ const createTranspileOnlyGetOutputFunction = (
   outputText: string | undefined
   diagnostics: ts.Diagnostic[]
 }) => {
+  const config = tsconfig()
+  // note: module and moduleResolution are always NodeNext
   const compilerOptions = { ...config.options }
-  if (overrideModuleType !== undefined)
-    compilerOptions.module = overrideModuleType
 
   const tsTranspileModule = createTsTranspileModule({
     compilerOptions,
-    reportDiagnostics: true,
   })
 
   return (code: string, fileName: string) => {
-    let result: ts.TranspileOutput
-    result = tsTranspileModule(
+    const { outputText } = tsTranspileModule(
       code,
       {
         fileName,
@@ -47,12 +45,7 @@ const createTranspileOnlyGetOutputFunction = (
         : undefined
     )
 
-    if (result.diagnostics?.length)
-      result.diagnostics.forEach(d => report(d))
-
-    const { outputText, diagnostics = [] } = result
-
-    return { outputText, diagnostics }
+    return { outputText, diagnostics: [] }
   }
 }
 
@@ -64,16 +57,11 @@ const optionsRedundantWithVerbatimModuleSyntax = new Set([
 
 const createTsTranspileModule = ({
   compilerOptions: options = tsconfig().options,
-  reportDiagnostics = true,
-}: Pick<
-  ts.TranspileOptions,
-  'compilerOptions' | 'reportDiagnostics'
->) => {
-  const compilerOptionsDiagnostics: ts.Diagnostic[] = []
-
+}: Pick<ts.TranspileOptions, 'compilerOptions'>) => {
+  // Pick up the default set of transpile-only settings from tsc
+  // Omit any redunddant with verbatimModuleSyntax, if set.
   //@ts-ignore - type not exported, but it's there.
   for (const option of ts.transpileOptionValueCompilerOptions) {
-    // Do not set redundant config options if `verbatimModuleSyntax` was supplied.
     if (
       options.verbatimModuleSyntax &&
       optionsRedundantWithVerbatimModuleSyntax.has(option.name)
@@ -104,7 +92,9 @@ const createTsTranspileModule = ({
     getSourceFile: fileName =>
       fileName === normalizePath(inputFileName)
         ? sourceFile
-        : undefined,
+        : /* c8 ignore start */
+          undefined,
+    /* c8 ignore stop */
     // we only write exactly one file, the output text
     writeFile: (_, text) => {
       outputText = text
@@ -113,13 +103,16 @@ const createTsTranspileModule = ({
     useCaseSensitiveFileNames: () => true,
     getCanonicalFileName: fileName => fileName,
     getCurrentDirectory: () => '',
+    /* c8 ignore next */
     getNewLine: () => newLine,
     fileExists: (fileName): boolean =>
       fileName === inputFileName || fileName === packageJsonFileName,
     readFile: fileName =>
       fileName === packageJsonFileName
         ? `{"type": "${packageJsonType}"}`
-        : '',
+        : /* c8 ignore start */
+          '',
+    /* c8 ignore stop */
     directoryExists: () => true,
     getDirectories: () => [],
   }
@@ -128,23 +121,27 @@ const createTsTranspileModule = ({
     input: string,
     transpileOptions2: ts.TranspileOptions,
     pjType?: 'module' | 'commonjs'
-  ): ts.TranspileOutput => {
+  ): {
+    outputText: string | undefined
+    diagnostics: ts.Diagnostic[]
+  } => {
     // if jsx is specified then treat file as .tsx
-    inputFileName =
-      transpileOptions2.fileName ||
-      (options && options.jsx ? 'module.tsx' : 'module.ts')
+    inputFileName = transpileOptions2.fileName as string
     const dir = dirname(inputFileName)
     packageJsonFileName = dir + '/package.json'
     if (pjType) packageJsonType = pjType
     else {
       for (const d of walkUp(dir)) {
-        try {
+        const pj = catcher(() => {
           const json = readFile(d + '/package.json')
-          if (!json) continue
-          const { type: pjType = 'commonjs' } = JSON.parse(json)
-          packageJsonType = pjType
+          if (!json) return undefined
+          const pj = JSON.parse(json) as { type?: 'commonjs' | 'module' }
+          return pj
+        })
+        if (pj?.type) {
+          packageJsonType = pj.type
           break
-        } catch {}
+        }
       }
     }
 
@@ -165,16 +162,6 @@ const createTsTranspileModule = ({
       ).getSetExternalModuleIndicator(options),
     })
 
-    if (transpileOptions2.moduleName) {
-      sourceFile.moduleName = transpileOptions2.moduleName
-    }
-
-    if (transpileOptions2.renamedDependencies) {
-      ;(sourceFile as any).renamedDependencies = new Map(
-        Object.entries(transpileOptions2.renamedDependencies)
-      )
-    }
-
     // Output
     outputText = undefined
 
@@ -184,42 +171,27 @@ const createTsTranspileModule = ({
       compilerHost
     )
 
-    const diagnostics = compilerOptionsDiagnostics.slice()
-
-    if (reportDiagnostics) {
-      ;(ts as any).addRange(
-        /*to*/ diagnostics,
-        /*from*/ program.getSyntacticDiagnostics(sourceFile)
-      )
-      ;(ts as any).addRange(
-        /*to*/ diagnostics,
-        /*from*/ program.getOptionsDiagnostics()
-      )
-    }
-
     // Emit
     program.emit()
 
+    // unpossible
+    /* c8 ignore start */
     if (outputText === undefined) {
       throw new Error('Output generation failed')
     }
+    /* c8 ignore stop */
 
-    return { outputText, diagnostics }
+    return { outputText, diagnostics: [] }
   }
 
   return transpileModule
 }
 
 export const getOutputForceCommonJS =
-  createTranspileOnlyGetOutputFunction(
-    ts.ModuleKind.NodeNext,
-    'nodecjs'
-  )
+  createTranspileOnlyGetOutputFunction('nodecjs')
 
-export const getOutputForceESM = createTranspileOnlyGetOutputFunction(
-  ts.ModuleKind.NodeNext,
-  'nodeesm'
-)
+export const getOutputForceESM =
+  createTranspileOnlyGetOutputFunction('nodeesm')
 
 export const getOutputTranspileOnly =
   createTranspileOnlyGetOutputFunction()
