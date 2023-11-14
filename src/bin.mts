@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 
+// vim: set filetype=typescript
+
 import { foregroundChild } from 'foreground-child'
 import { readFileSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import { resolve as pathResolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+import Module from 'node:module'
 
-// vim: set filetype=typescript
 const [sMajor, sMinor] = process.versions.node.split('.')
 /* c8 ignore start */
 if (!sMajor || !sMinor) {
@@ -15,18 +17,18 @@ if (!sMajor || !sMinor) {
   )
 }
 
-const major = parseInt(sMajor, 10)
-const minor = parseInt(sMinor, 10)
-const useImport = major > 20 || (major === 20 && minor >= 6)
+const useImport = typeof Module.register === 'function'
 const importScript = fileURLToPath(
   new URL('./hooks/import.mjs', import.meta.url)
 )
 const loaderScript = fileURLToPath(
   new URL('./hooks/legacy-loader.mjs', import.meta.url)
 )
+/* c8 ignore start */
 const addArg = useImport
   ? `--import=${importScript}`
   : `--loader=${loaderScript}`
+/* c8 ignore stop */
 
 const usage = () =>
   console.log(`Usage: tsimp [<flag> | <node args>]
@@ -52,14 +54,14 @@ Flags:
 
 Flags have no effect unless they are the first argument.
 
-If no flags are specified, then tsimp runs node using the appropriate
-'--loader=tsimp/loader' or  '--import=tsimp/import' for the current
-node version.
+If none of the above flags are specified, then tsimp runs node using the
+appropriate '--loader=tsimp/loader' or  '--import=tsimp/import' for the
+current node version.
 
 All other args are just normal node arguments.
 
 Note: \`tsimp\` without any arguments is a node repl that can import
-TypeScript modules, not a TypeScript repl.`)
+TypeScript modules, not a "TypeScript repl".`)
 
 const startDaemon = async () => {
   const { DaemonClient } = await import('./client.js')

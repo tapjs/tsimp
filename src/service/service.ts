@@ -33,7 +33,7 @@ const findTsFile = (url: string | URL) => {
     const equivs = equivalents(fileName)
     const checks = isTSExt(ext)
       ? []
-      : equivs
+      : equivs?.length
       ? equivs
       : tsExts.map(tsExt => fileName + tsExt)
     checks.unshift(fileName)
@@ -60,11 +60,13 @@ export class DaemonServer extends SockDaemonServer<
 
   #handleCompile(request: ServiceCompileRequest): CompileResult {
     const sourceFile = findTsFile(request.fileName)
+    /* c8 ignore start */
     if (!sourceFile) {
       throw new Error(
         'failed to resolve typescript source for ' + request.fileName
       )
     }
+    /* c8 ignore stop */
     const { fileName, diagnostics } = load(
       sourceFile,
       request.diagMode !== 'ignore',
