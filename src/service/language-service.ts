@@ -5,17 +5,6 @@
 import ts from 'typescript'
 import { error, info, trace } from '../debug.js'
 import {
-  fileContents,
-  fileVersions,
-  incProjectVersion,
-  projectVersion,
-} from './file-versions.js'
-import {
-  getResolveModuleNameLiterals,
-  getModuleResolutionCache,
-} from './resolve-module-name-literals.js'
-import { getResolveTypeReferenceDirectiveReferences } from './resolve-type-reference-directive-references.js'
-import {
   directoryExists,
   fileExists,
   getCurrentDirectory,
@@ -23,18 +12,30 @@ import {
   readFile,
   realpath,
 } from '../ts-sys-cached.js'
+import {
+  fileContents,
+  fileVersions,
+  incProjectVersion,
+  projectVersion,
+} from './file-versions.js'
+import {
+  getModuleResolutionCache,
+  getResolveModuleNameLiterals,
+} from './resolve-module-name-literals.js'
+import { getResolveTypeReferenceDirectiveReferences } from './resolve-type-reference-directive-references.js'
 import { tsconfig } from './tsconfig.js'
 
 let lastConfig: ts.ParsedCommandLine
-export type LanguageServiceHostWithResolveModuleNameLiterals =
+export type LSHostWithResolveModuleNameLiterals =
   ts.LanguageServiceHost & {
     resolveModuleNameLiterals: Exclude<
       ts.LanguageServiceHost['resolveModuleNameLiterals'],
       undefined
     >
   }
+
 export type LanguageServiceWithHost = ts.LanguageService & {
-  getHost(): LanguageServiceHostWithResolveModuleNameLiterals
+  getHost(): LSHostWithResolveModuleNameLiterals
 }
 
 let lastService: LanguageServiceWithHost
@@ -50,7 +51,7 @@ export const getLanguageService = (): LanguageServiceWithHost => {
   // spike script using a LanguageService host to do typechecking
   const host: ts.LanguageServiceHost = {
     readFile,
-    trace: config.options.tsTrace ? trace : undefined,
+    trace: config.options.traceResolution ? trace : undefined,
 
     directoryExists,
     realpath,
@@ -92,7 +93,7 @@ export const getLanguageService = (): LanguageServiceWithHost => {
     error: (s: string) => error(s),
   }
 
-  const hostWithResolveModuleNameLiterals: LanguageServiceHostWithResolveModuleNameLiterals =
+  const hostWithResModNameLit: LSHostWithResolveModuleNameLiterals =
     Object.assign(host, {
       resolveTypeReferenceDirectiveReferences:
         getResolveTypeReferenceDirectiveReferences(
@@ -109,12 +110,9 @@ export const getLanguageService = (): LanguageServiceWithHost => {
   )
 
   lastService = Object.assign(
-    ts.createLanguageService(
-      hostWithResolveModuleNameLiterals,
-      registry
-    ),
+    ts.createLanguageService(hostWithResModNameLit, registry),
     {
-      getHost: () => hostWithResolveModuleNameLiterals,
+      getHost: () => hostWithResModNameLit,
     }
   )
   const duration =
