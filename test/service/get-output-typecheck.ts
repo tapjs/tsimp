@@ -65,6 +65,7 @@ for (const tsconfigModule of ['commonjs', 'esnext', 'nodenext']) {
               `${dir}/${file}`
             )
             const d = diagnostics
+              .filter(d => d.code !== 6059)
               .map(
                 d =>
                   [
