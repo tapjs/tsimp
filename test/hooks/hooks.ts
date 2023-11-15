@@ -181,7 +181,6 @@ t.test('load', async t => {
       'outside.js': 'console.log("outside");',
     })
     const cwd = process.cwd()
-    t.teardown(() => process.chdir(cwd))
     process.chdir(dir + '/project')
 
     const hooks = (await t.mockImport(
@@ -194,7 +193,7 @@ t.test('load', async t => {
       }
     )) as typeof import('../../dist/esm/hooks/hooks.mjs')
 
-    const nextLoad = (url: string, context?: LoadHookContext) =>
+    const nextLoad = (_url: string, _context?: LoadHookContext) =>
       ({
         format: 'commonjs',
       } as unknown as LoadFnOutput)
@@ -223,5 +222,6 @@ t.test('load', async t => {
       format: 'commonjs',
       source: readFileSync(resolve(dir, 'outside.js'), 'utf8'),
     })
+    process.chdir(cwd)
   })
 })
