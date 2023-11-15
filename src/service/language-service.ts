@@ -9,6 +9,7 @@ import {
   fileExists,
   getCurrentDirectory,
   getDirectories,
+  normalizePath,
   readFile,
   realpath,
 } from '../ts-sys-cached.js'
@@ -58,7 +59,7 @@ export const getLanguageService = (): LanguageServiceWithHost => {
     getCurrentDirectory,
     getDirectories,
     fileExists: path => {
-      if (fileVersions.has(path)) return true
+      if (fileVersions.has(normalizePath(path))) return true
       return fileExists(path)
     },
     writeFile: ts.sys.writeFile,
