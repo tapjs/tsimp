@@ -73,21 +73,6 @@ Array [
     1479,
     "The current file is a CommonJS module whose imports will produce 'require' calls; however, the referenced file is an ECMAScript module and cannot be imported with 'require'. Consider writing a dynamic 'import(\\"../esm.mjs\\")' call instead.",
   ],
-  Array [
-    "mixed.ts",
-    6059,
-    "File '{CWD}/.tap/fixtures/test-service-get-output-typecheck.ts-tsconfig-module-commonjs-package.json-type-commonjs/file.ts' is not under 'rootDir' '{CWD}/.tap/fixtures/test-service-get-output-typecheck.ts-tsconfig-module-commonjs-package.json-type-module'. 'rootDir' is expected to contain all source files.",
-  ],
-  Array [
-    "mixed.ts",
-    6059,
-    "File '{CWD}/.tap/fixtures/test-service-get-output-typecheck.ts-tsconfig-module-commonjs-package.json-type-commonjs/esm.mts' is not under 'rootDir' '{CWD}/.tap/fixtures/test-service-get-output-typecheck.ts-tsconfig-module-commonjs-package.json-type-module'. 'rootDir' is expected to contain all source files.",
-  ],
-  Array [
-    "mixed.ts",
-    6059,
-    "File '{CWD}/.tap/fixtures/test-service-get-output-typecheck.ts-tsconfig-module-commonjs-package.json-type-commonjs/commonjs.cts' is not under 'rootDir' '{CWD}/.tap/fixtures/test-service-get-output-typecheck.ts-tsconfig-module-commonjs-package.json-type-module'. 'rootDir' is expected to contain all source files.",
-  ],
 ]
 `
 
