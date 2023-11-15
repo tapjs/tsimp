@@ -18,14 +18,14 @@ const { requireCommonJSLoad: fromDist } = (await t.mockImport(
 )) as typeof import('../dist/esm/require-commonjs-load.js')
 
 t.equal(
-  fromSrc(),
+  String(fromSrc()).toLowerCase(),
   fileURLToPath(
     new URL('../dist/commonjs/service/load.js', import.meta.url)
-  )
+  ).toLowerCase()
 )
 t.equal(
-  fromDist(),
+  String(fromDist()).toLowerCase(),
   fileURLToPath(
     new URL('../dist/commonjs/service/load.js', import.meta.url)
-  )
+  ).toLowerCase()
 )
