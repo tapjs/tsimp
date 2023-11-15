@@ -2,8 +2,8 @@
 // Note: this is only used when forcing a given compilation target
 // if the emit was skipped, or when diagnostics are suppressed with
 // TSIMP_DIAG=ignore, so we don't even bother collecting diagnostics.
-import {catcher} from '@isaacs/catcher'
-import { dirname } from 'path'
+import { catcher } from '@isaacs/catcher'
+import { dirname, relative } from 'path'
 import ts from 'typescript'
 import { walkUp } from 'walk-up-path'
 import { normalizePath, readFile } from '../ts-sys-cached.js'
@@ -106,9 +106,9 @@ const createTsTranspileModule = ({
     /* c8 ignore next */
     getNewLine: () => newLine,
     fileExists: (fileName): boolean =>
-      fileName === inputFileName || fileName === packageJsonFileName,
+      relative(fileName, inputFileName) === '' || relative(fileName, packageJsonFileName) === '',
     readFile: fileName =>
-      fileName === packageJsonFileName
+      relative(fileName, packageJsonFileName) === ''
         ? `{"type": "${packageJsonType}"}`
         : /* c8 ignore start */
           '',

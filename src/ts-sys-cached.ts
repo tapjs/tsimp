@@ -34,10 +34,12 @@ export const realpath = cachedMtime((path: string) =>
 
 export const getCurrentDirectory = () => cwd
 
+/* c8 ignore start */
 const pathHasTrailingSlash =
   sep === '/'
     ? (p: string) => p.endsWith('/')
     : (p: string) => p.endsWith('/') || p.endsWith(sep)
+/* c8 ignore stop */
 
 export const normalizePath = cached((path: string): string => {
   const trailingSlash = pathHasTrailingSlash(path)

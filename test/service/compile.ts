@@ -1,5 +1,6 @@
 import { basename } from 'path'
 import t from 'tap'
+const cwd = process.cwd()
 
 for (const tsconfigModule of ['commonjs', 'esnext', 'nodenext']) {
   t.test(`tsconfig module=${tsconfigModule}`, async t => {
@@ -78,6 +79,7 @@ for (const tsconfigModule of ['commonjs', 'esnext', 'nodenext']) {
                 t.matchSnapshot(d, 'diagnostics')
               })
             }
+	    t.test('chdir', async () => process.chdir(cwd))
           })
         }
       })

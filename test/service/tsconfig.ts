@@ -10,7 +10,6 @@ process.env.TSIMP_CONFIG_DEBOUNCE = '10'
 
 t.test('basic loading', async t => {
   const cwd = process.cwd()
-  t.after(() => process.chdir(cwd))
   const dir = t.testdir({
     'tsconfig.json': JSON.stringify({
       compilerOptions: {
@@ -54,6 +53,7 @@ t.test('basic loading', async t => {
   utimesSync(resolve(dir, 'tsconfig.json'), now, now)
   const fifth = tsconfig()
   t.equal(fifth, fourth, 'same content, same config')
+  t.test('chdir', async () => process.chdir(cwd))
 })
 
 t.test('exit in error if tsconfig not found', async t => {

@@ -1,4 +1,5 @@
 import t from 'tap'
+const cwd = process.cwd()
 
 for (const tsconfigModule of ['commonjs', 'esnext', 'nodenext']) {
   t.test(`tsconfig module=${tsconfigModule}`, async t => {
@@ -96,6 +97,7 @@ for (const tsconfigModule of ['commonjs', 'esnext', 'nodenext']) {
                 )
               })
             }
+            t.test('chdir', async () => process.chdir(cwd))
           })
         }
       })

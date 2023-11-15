@@ -35,7 +35,6 @@ t.equal(
 
 const cwd = process.cwd()
 t.test('change config reloads service', async t => {
-  t.teardown(() => process.chdir(cwd))
   const dir = t.testdir({
     'tsconfig.json': JSON.stringify({
       compilerOptions: {
@@ -93,4 +92,5 @@ t.test('change config reloads service', async t => {
 
   const svc2 = getLanguageService()
   t.not(svc, svc2, 'changed config, reload cached service')
+  t.test('chdir', async () => process.chdir(cwd))
 })

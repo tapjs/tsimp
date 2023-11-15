@@ -1,6 +1,7 @@
 import { readFileSync, utimesSync, writeFileSync } from 'fs'
 import t from 'tap'
 process.env.TSIMP_CONFIG_DEBOUNCE = '-1'
+const cwd = process.cwd()
 
 for (const tsconfigModule of ['commonjs', 'esnext', 'nodenext']) {
   t.test(`tsconfig module=${tsconfigModule}`, async t => {
@@ -96,6 +97,7 @@ for (const tsconfigModule of ['commonjs', 'esnext', 'nodenext']) {
               fileName,
               'load after config change not cached, but still same output'
             )
+	    t.test('chdir', async () => process.chdir(cwd))
           })
         }
       })

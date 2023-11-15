@@ -45,7 +45,6 @@ export const baz = 'baz'
   })
   const cwd = process.cwd()
   process.chdir(dir)
-  t.teardown(() => process.chdir(cwd))
   const { getLanguageService } = (await t.mockImport(
     '../../src/service/language-service.js'
   )) as typeof import('../../src/service/language-service.js')
@@ -56,6 +55,8 @@ export const baz = 'baz'
   svc.getHost().resolveModuleNameLiterals
   svc.getProgram()
   markFileNameInternal(resolve(dir, 'index.ts'))
+
+  t.test('chdir', async () => process.chdir(cwd))
 })
 
 t.test('esm program', async t => {
@@ -93,7 +94,6 @@ export const baz = 'baz'
   })
   const cwd = process.cwd()
   process.chdir(dir)
-  t.teardown(() => process.chdir(cwd))
   const { getLanguageService } = (await t.mockImport(
     '../../src/service/language-service.js'
   )) as typeof import('../../src/service/language-service.js')
@@ -104,4 +104,5 @@ export const baz = 'baz'
   svc.getHost().resolveModuleNameLiterals
   svc.getProgram()
   markFileNameInternal(resolve(dir, 'index.ts'))
+  t.test('chdir', async () => process.chdir(cwd))
 })

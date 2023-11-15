@@ -18,10 +18,10 @@ if (!sMajor || !sMinor) {
 }
 
 const useImport = typeof Module.register === 'function'
-const importScript = fileURLToPath(
+const importScript = String(
   new URL('./hooks/import.mjs', import.meta.url)
 )
-const loaderScript = fileURLToPath(
+const loaderScript = String(
   new URL('./hooks/legacy-loader.mjs', import.meta.url)
 )
 /* c8 ignore start */
