@@ -20,8 +20,10 @@ const { DaemonClient } = (await t.mockImport('../src/client.js', {
 
 t.equal(DaemonClient.serviceName, 'tsimp')
 t.equal(
-  DaemonClient.daemonScript,
-  fileURLToPath(new URL('../src/service/daemon.mjs', import.meta.url))
+  DaemonClient.daemonScript.toLowerCase(),
+  fileURLToPath(
+    new URL('../src/service/daemon.mjs', import.meta.url)
+  ).toLowerCase()
 )
 
 MockSDC.response = {}
