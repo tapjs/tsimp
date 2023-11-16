@@ -168,30 +168,15 @@ will override anything else in the file. For example:
 Sourcemaps are always enabled when using `tsimp`, so that errors
 reference the approriate call sites within TypeScript code.
 
-## Using with `"module": "bundler"`
+## `"module"` and `"moduleResolution"`
 
 The ultimate resulting module style for tsimp _must_ be something
 intelligible by Node, without any additional bundling or
-transpiling. So, unless it's going to be made Node-compatible by
-some other loader/import script in the stack, you'll need to set
-your `module` tsconfig for `tsimp` to something like `Node16` or
-`NodeNext`, even if you are actually compiling with tsc in
-`"module": "bundler"` mode.
+transpiling.
 
-```json
-{
-  "compilerOptions": {
-    "...": "..etc..",
-    "module": "bundler"
-  },
-  "tsimp": {
-    "compilerOptions": {
-      "module": "NodeNext",
-      "moduleResolution": "NodeNext"
-    }
-  }
-}
-```
+Towards that end, the `module` and `moduleResolution` settings
+are both hard-coded to `NodeNext` in tsimp, regardless of what is
+in `tsconfig.json`.
 
 ## Compilation Diagnostics
 
