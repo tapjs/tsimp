@@ -5,6 +5,9 @@
   "files": [
     "dist"
   ],
+  "bin": {
+    "tsimp": "dist/esm/bin.mjs"
+  },
   "tshy": {
     "exports": {
       "./package.json": "./package.json",
