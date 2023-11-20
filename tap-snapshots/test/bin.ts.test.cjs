@@ -8,6 +8,6 @@
 exports[`test/bin.ts > TAP > actually run a program > compile > must match snapshot 1`] = `
 console.log("ok");
 export {};
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZmlsZS5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy50YXAvZml4dHVyZXMvdGVzdC1iaW4udHMtYWN0dWFsbHktcnVuLWEtcHJvZ3JhbS9maWxlLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBLE9BQU8sQ0FBQyxHQUFHLENBQUMsSUFBSSxDQUFDLENBQUEifQ==
+//# sourceMappingURL=
 
 `

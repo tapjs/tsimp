@@ -67,7 +67,15 @@ for (const tsconfigModule of ['commonjs', 'esnext', 'nodenext']) {
                   typeCheck
                 )
                 t.matchSnapshot(
-                  fileName && readFileSync(fileName),
+                  fileName &&
+                    Buffer.from(
+                      readFileSync(fileName)
+                        .toString()
+                        .replace(
+                          /# sourceMappingURL=.*/,
+                          '# sourceMappingURL='
+                        )
+                    ),
                   'compiled'
                 )
                 t.matchSnapshot(diagnostics, 'diagnostics')

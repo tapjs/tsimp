@@ -1,4 +1,6 @@
-import { basename } from 'path'
+import { execSync } from 'child_process'
+import { writeFileSync } from 'fs'
+import { basename, resolve } from 'path'
 import t from 'tap'
 const cwd = process.cwd()
 
@@ -44,6 +46,11 @@ for (const tsconfigModule of ['commonjs', 'esnext', 'nodenext']) {
                 import './esm.mjs'
                 import './commonjs.cjs'
               `,
+              nested: {
+                'sourcemap.ts': `
+                  console.log(new Error().stack)
+                `,
+              },
             }
             const dir = t.testdir(fixture)
             process.chdir(dir)
@@ -75,11 +82,35 @@ for (const tsconfigModule of ['commonjs', 'esnext', 'nodenext']) {
                     ? d.messageText.messageText
                     : d.messageText,
                 ])
-                t.matchSnapshot(outputText, 'compiled')
+                t.matchSnapshot(
+                  outputText?.replace(
+                    /# sourceMappingURL=.*/,
+                    '# sourceMappingURL='
+                  ),
+                  'compiled'
+                )
                 t.matchSnapshot(d, 'diagnostics')
               })
             }
-	    t.test('chdir', async () => process.chdir(cwd))
+            t.test('sourcemap.ts', async t => {
+              const sourcePath = `${dir}/nested/sourcemap.ts`
+              const { outputText } = compile(
+                fixture['nested']['sourcemap.ts'],
+                sourcePath,
+                typeCheck
+              )
+
+              const outputPath = `${dir}/nested/sourcemap.js`
+              writeFileSync(outputPath, outputText ?? '')
+
+              const stdout = execSync(
+                `${process.argv[0]} --enable-source-maps ${outputPath}`
+              ).toString()
+              const stackTracePath =
+                stdout.match(/^\s+at [^\(]+\(([^:]+)/m)?.[1] ?? ''
+              t.equal(resolve(stackTracePath), resolve(sourcePath))
+            })
+            t.test('chdir', async () => process.chdir(cwd))
           })
         }
       })

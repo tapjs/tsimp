@@ -89,9 +89,18 @@ for (const tsconfigModule of ['commonjs', 'esnext', 'nodenext']) {
                 t.strictSame(forceESM.diagnostics, [], 'no diags esm')
                 t.matchSnapshot(
                   {
-                    noForce: noForce.outputText,
-                    forceCommonJS: forceCommonJS.outputText,
-                    forceESM: forceESM.outputText,
+                    noForce: noForce.outputText?.replace(
+                      /# sourceMappingURL=.*/,
+                      '# sourceMappingURL='
+                    ),
+                    forceCommonJS: forceCommonJS.outputText?.replace(
+                      /# sourceMappingURL=.*/,
+                      '# sourceMappingURL='
+                    ),
+                    forceESM: forceESM.outputText?.replace(
+                      /# sourceMappingURL=.*/,
+                      '# sourceMappingURL='
+                    ),
                   },
                   'outputs'
                 )

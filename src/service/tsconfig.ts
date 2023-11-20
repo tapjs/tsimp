@@ -67,7 +67,7 @@ export const tsconfig = () => {
     mtime = Number(readFile.mtimeCache.get(configPath)?.[0])
     lastStat = performance.now()
 
-    const res = applyOverrides(
+    const configWithDefaults = applyOverrides(
       // default rootDir to the folder containing tsconfig, if not
       // set explicitly to something else, so we always have one.
       // also default to recommended setting for node programs
@@ -85,22 +85,27 @@ export const tsconfig = () => {
           jsx: ts.JsxEmit.Preserve,
         },
       },
-      applyOverrides(tsimp ? applyOverrides(config, tsimp) : config, {
-        compilerOptions: {
-          // settings that tsimp depends on, cannot be overridden
-          // virtual folder, nothing actually written to disk ever
-          outDir: resolve('.tsimp-compiled'),
-          module: 'nodenext',
-          moduleResolution: 'nodenext',
-          sourceMap: undefined,
-          inlineSourceMap: true,
-          inlineSources: false,
-          declarationMap: false,
-          declaration: false,
-          noEmit: false,
-        },
-      })
+      tsimp ? applyOverrides(config, tsimp) : config
     )
+    const res = applyOverrides(configWithDefaults, {
+      compilerOptions: {
+        // settings that tsimp depends on, cannot be overridden
+        // virtual folder, nothing actually written to disk ever
+        outDir: resolve('.tsimp-compiled'),
+        module: 'nodenext',
+        moduleResolution: 'nodenext',
+        sourceMap: undefined,
+        sourceRoot: resolve(
+          dir,
+          configWithDefaults.compilerOptions.rootDir
+        ),
+        inlineSourceMap: true,
+        inlineSources: false,
+        declarationMap: false,
+        declaration: false,
+        noEmit: false,
+      },
+    })
     const newConfig = ts.parseJsonConfigFileContent(res, ts.sys, dir)
     const newConfigJSON = JSON.stringify(newConfig)
     if (loadedConfig && newConfigJSON === loadedConfigJSON) {

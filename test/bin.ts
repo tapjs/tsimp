@@ -102,7 +102,9 @@ t.test('actually run a program', async t => {
   t.test('compile', async t => {
     t.equal(run(['--compile']).status, 1, 'file is required')
     const { stdout } = run(['--compile', `./${rel}/file.ts`])
-    t.matchSnapshot(stdout)
+    t.matchSnapshot(
+      stdout.replace(/# sourceMappingURL=.*/, '# sourceMappingURL=')
+    )
   })
   t.test('compile with diags', async t => {
     const { stderr } = run(['--compile', `./${rel}/bad.ts`])
