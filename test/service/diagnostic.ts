@@ -15,11 +15,7 @@ export const f: Foo = { bar: true, baz: 'xyz' }
 })
 
 const f = resolve(dir, 'bad-foo.ts')
-const { diagnostics } = compile(
-  readFileSync(f, 'utf8'),
-  f,
-  true
-)
+const { diagnostics } = compile(readFileSync(f, 'utf8'), f, true)
 
 const d = diagnostics[0]
 if (!d) throw new Error('no diagnostics')

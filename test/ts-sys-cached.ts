@@ -27,7 +27,10 @@ t.equal(sys.getCurrentDirectory(), process.cwd())
 t.equal(sys.normalizePath(import.meta.url), import.meta.url)
 t.equal(
   sys.normalizePath(fileURLToPath(import.meta.url) + '/../x/y/'),
-  resolve(fileURLToPath(import.meta.url), '../x/y').replace(/\\/g, '/') + '/'
+  resolve(fileURLToPath(import.meta.url), '../x/y').replace(
+    /\\/g,
+    '/'
+  ) + '/'
 )
 t.equal(sys.normalizePath('x/y/z/../a/'), 'x/y/a/')
 const sysWin = await t.mockImport('../src/ts-sys-cached.js', {

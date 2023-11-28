@@ -66,8 +66,10 @@ for (const tsconfigModule of ['commonjs', 'esnext', 'nodenext']) {
               'file.ts',
             ] as const) {
               t.test(file, async t => {
-                const content = file === 'mix/mixed.ts'
-                  ? fixture.mix['mixed.ts'] : fixture[file]
+                const content =
+                  file === 'mix/mixed.ts'
+                    ? fixture.mix['mixed.ts']
+                    : fixture[file]
                 const noForce = getOutputTranspileOnly(
                   content,
                   `${dir}/${file}`

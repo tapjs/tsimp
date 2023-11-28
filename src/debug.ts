@@ -23,6 +23,7 @@ const getLogger =
 
 export const error = getLogger('error', red)
 export const warn = level > 0 ? getLogger('warn', yellow) : () => {}
-export const debug = level > 1 ? getLogger('debug', magenta) : () => {}
+export const debug =
+  level > 1 ? getLogger('debug', magenta) : () => {}
 export const info = level > 2 ? getLogger('info', blue) : () => {}
 export const trace = getLogger('trace', green)

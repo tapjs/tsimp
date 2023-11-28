@@ -1,6 +1,15 @@
 import t from 'tap'
 
-import { jsExts, tsExts, map, allExts, isExt, equivalents, isTSExt, isJSExt } from '../src/equivalents.js'
+import {
+  jsExts,
+  tsExts,
+  map,
+  allExts,
+  isExt,
+  equivalents,
+  isTSExt,
+  isJSExt,
+} from '../src/equivalents.js'
 
 const files = [
   '/x/y.ts',

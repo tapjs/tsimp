@@ -36,14 +36,18 @@ export const map: ExtMap = {
 } as const satisfies MapBase
 
 export const allExts = Object.keys(map)
-export const isExt = (e: any): e is TSExt | JSExt => allExts.includes(e)
+export const isExt = (e: any): e is TSExt | JSExt =>
+  allExts.includes(e)
 
-export const equivalents = (path: string, extensionless = false): string[] => {
+export const equivalents = (
+  path: string,
+  extensionless = false
+): string[] => {
   const { ext } = parse(path)
   const stem = path.substring(0, path.length - ext.length)
-  const equivs:string[] = []
+  const equivs: string[] = []
   if (isExt(ext)) {
-    equivs.push(...map[ext].map((e => stem+e)))
+    equivs.push(...map[ext].map(e => stem + e))
   }
   if (extensionless) {
     equivs.push(...allExts.map(e => path + e))

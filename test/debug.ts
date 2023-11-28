@@ -19,10 +19,8 @@ for (const isTTY of [true, false]) {
           writable: true,
           value: isTTY,
         })
-        if (TSIMP_DEBUG)
-          process.env.TSIMP_DEBUG = TSIMP_DEBUG
-        else
-          delete process.env.TSIMP_DEBUG
+        if (TSIMP_DEBUG) process.env.TSIMP_DEBUG = TSIMP_DEBUG
+        else delete process.env.TSIMP_DEBUG
         const d = (await t.mockImport('../dist/esm/debug.js', {
           'node:util': {
             format: (...args: any[]) => JSON.stringify(args),
@@ -33,7 +31,12 @@ for (const isTTY of [true, false]) {
         d.debug('debug')
         d.info('info')
         d.trace('trace')
-        t.matchSnapshot(errs().map(s => s.join('')).join('\n'), 'output')
+        t.matchSnapshot(
+          errs()
+            .map(s => s.join(''))
+            .join('\n'),
+          'output'
+        )
       })
     }
   })

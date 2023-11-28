@@ -83,7 +83,7 @@ In Node v20.6 and higher, you can also load `tsimp` in your
 program, and from that point forward, TypeScript modules will
 Just Work.
 
-Note that `import` declarations happen in parallel *before* the
+Note that `import` declarations happen in parallel _before_ the
 code is executed, so you'll need to split it up like this:
 
 ```js

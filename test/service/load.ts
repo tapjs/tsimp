@@ -105,7 +105,7 @@ for (const tsconfigModule of ['commonjs', 'esnext', 'nodenext']) {
               fileName,
               'load after config change not cached, but still same output'
             )
-	    t.test('chdir', async () => process.chdir(cwd))
+            t.test('chdir', async () => process.chdir(cwd))
           })
         }
       })

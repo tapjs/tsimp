@@ -91,7 +91,7 @@ for (const tsconfigModule of ['commonjs', 'esnext', 'nodenext']) {
             t.matchSnapshot(d, 'diagnostics')
           })
         }
-	t.test('chdir', async () => process.chdir(cwd))
+        t.test('chdir', async () => process.chdir(cwd))
       })
     }
   })

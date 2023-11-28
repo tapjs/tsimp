@@ -63,7 +63,10 @@ export const getResolveTypeReferenceDirectiveReferences = (
       const key = createModeAwareCacheKey(name, mode)
       let result = rtrdrInternalCache.get(key)
       if (!result) {
-        rtrdrInternalCache.set(key, (result = loader.resolve(name, mode)))
+        rtrdrInternalCache.set(
+          key,
+          (result = loader.resolve(name, mode))
+        )
       }
       resolutions.push(result)
     }

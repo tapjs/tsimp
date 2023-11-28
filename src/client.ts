@@ -26,7 +26,6 @@ export class DaemonClient extends SockDaemonClient<
   ServiceRequest,
   ServiceResolveResult | ServiceCompileResult
 > {
-
   /**
    * Always 'tsimp'. Used by SockDaemon to know where to put stuff.
    */

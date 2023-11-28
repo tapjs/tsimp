@@ -106,7 +106,8 @@ const createTsTranspileModule = ({
     /* c8 ignore next */
     getNewLine: () => newLine,
     fileExists: (fileName): boolean =>
-      relative(fileName, inputFileName) === '' || relative(fileName, packageJsonFileName) === '',
+      relative(fileName, inputFileName) === '' ||
+      relative(fileName, packageJsonFileName) === '',
     readFile: fileName =>
       relative(fileName, packageJsonFileName) === ''
         ? `{"type": "${packageJsonType}"}`
@@ -135,7 +136,9 @@ const createTsTranspileModule = ({
         const pj = catcher(() => {
           const json = readFile(d + '/package.json')
           if (!json) return undefined
-          const pj = JSON.parse(json) as { type?: 'commonjs' | 'module' }
+          const pj = JSON.parse(json) as {
+            type?: 'commonjs' | 'module'
+          }
           return pj
         })
         if (pj?.type) {
