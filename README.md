@@ -117,15 +117,6 @@ In Node version 20.6 and higher, this will also attach the
 required loaders for ESM import support. In earlier Node
 versions, you _must_ use `--loader=tsimp/loader` for ESM support.
 
-### File Extensions, Module Resolution, etc.
-
-The same rules for file extensions, module resolution, and
-everything else apply when using `tsimp` as when using `tsc`.
-
-That is, if you're running in ESM mode, you may need to write
-your imports ending in `.js` even though the actual file on disk
-is `.ts`, because that's how TS does it.
-
 ## Configuration
 
 Most configuration is done by looking to the nearest
@@ -158,8 +149,8 @@ will override anything else in the file. For example:
   }
   "tsimp": {
     "compilerOptions": {
-      "sourceMap": true,
-      "skipLibCheck": true
+      "skipLibCheck": true,
+      "strict": false
     }
   }
 }
@@ -168,7 +159,21 @@ will override anything else in the file. For example:
 Sourcemaps are always enabled when using `tsimp`, so that errors
 reference the approriate call sites within TypeScript code.
 
-## `"module"` and `"moduleResolution"`
+### Config File Changes and `extends` Options
+
+If the `tsconfig.json` file used by tsimp changes, then it will
+automatically expire its memory and disk caches, because new
+options can result in very different results.
+
+However, while `extends` is fully supported (if `tsc` can load
+it, so can `tsimp`, because that's how it loads config), any
+extended config files will _not_ be tracked for changes or cause
+the cache to expire.
+
+When in doubt, `tsimp --restart` will reload everything as
+needed.
+
+### `"module"`, `"moduleResolution"`, and other must-haves
 
 The ultimate resulting module style for tsimp _must_ be something
 intelligible by Node, without any additional bundling or
@@ -178,7 +183,37 @@ Towards that end, the `module` and `moduleResolution` settings
 are both hard-coded to `NodeNext` in tsimp, regardless of what is
 in `tsconfig.json`.
 
-## Compilation Diagnostics
+Also, the following fields are always hard-coded by tsimp:
+
+- `outDir` Because tsimp isn't a build tool, but rather a module
+  importer, it doesn't actually write the emitted JavaScript to
+  disk. (Ok, technically it does, but only as a cache.) So, the
+  `outDir` is hard-coded to `.tsimp-compiled`, but this is never
+  used.
+- `sourceMap` This is always set to `undefined`, because:
+- `inlineSourceMap` is always set to `true`. It's just much
+  simpler and faster to have the sourcemap inline with the
+  generated JavaScript output.
+- `inlineSources` is always set to `false`. There is no need to
+  bloat the output, when the input is definitely present on disk.
+- `declarationMap` and `declaration` are always set to `false`,
+  because type declarations are not relevant.
+- `noEmit` is always set `false`, because the entire point is to
+  get the JavaScript code for Node to run. That said, the "emit"
+  is fully virtual, and nothing is written to disk (except to
+  avoid compiling the same code multiple times).
+
+### File Extensions, Module Resolution, etc.
+
+The same rules for file extensions, module resolution, and
+everything else apply when using `tsimp` as when using `tsc`.
+
+That means: if you're running in ESM mode, you need to write your
+imports ending in `.js` even though the actual file on disk is
+`.ts`, because that's how TS does it when `module` is set to
+`"NodeNext"` and the target dialect is ESM.
+
+### Compilation Diagnostics
 
 Set the `TSIMP_DIAG` environment variable to control what happens
 when there are compilation diagnostics.
@@ -190,3 +225,95 @@ when there are compilation diagnostics.
 - `TSIMP_DIAG=ignore` Just transpile the code, ignoring all
   diagnostics. (Similar to ts-node's `TS_NODE_TRANSPILE_ONLY=1`
   option.)
+
+You can also set `diagnostics` as a top-level field in the
+`tsimp` object in `tsconfig.json`. For example:
+
+```json
+{
+  "compilerOptions": {
+    "rootDir": "./src",
+    "declaration": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "inlineSources": true,
+    "jsx": "react",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "noUncheckedIndexedAccess": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": false,
+    "sourceMap": false,
+    "strict": true,
+    "target": "es2022"
+  }
+  "tsimp": {
+    "diagnostics": "error"
+  }
+}
+```
+
+## How fast is it?
+
+If the daemon is running, it's very fast, even if type checking
+is enabled. If the daemon is running and its previously compiled
+the file you're running, it's _zomg extremely_ fast, like "so fast
+you'll think it's broken" fast, outperforming TypeScript
+compilers written in Rust and Go, since it literally doesn't have
+to do anything except check some file stats and then hand the
+cached results to Node. (In fact, since it caches in memory as
+well as to disk, it might even be _faster_ in many cases than
+running plain old JavaScript, if the program is large.)
+
+And, this is with full type checking, which is sort of the point
+of using TypeScript. No matter how fast your compiler is, if
+you're then running `tsc --noEmit` to check your types, then it's
+not actually gaining much.
+
+If the daemon is _not_ running, and it's a cold start with no
+cache, it's pretty slow, comparable with ts-node, especially if
+type checking is enabled.
+
+An exceptionally not scientific example comparison:
+
+<pre style="color:#eeeeee;background:#222222;position:relative" title="tapjs/tsimp main - tapjs/tsimp">
+$ time node --loader @swc-node/register/esm hello.ts
+(node:89220) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+--import 'data:text/javascript,import { register } from &quot;node:module&quot;; import { pathToFileURL } from &quot;node:url&quot;; register(&quot;%40swc-node/register/esm&quot;, pathToFileURL(&quot;./&quot;));'
+(Use `node --trace-warnings ...` to show where the warning was created)
+hello, world
+
+real	0m0.268s
+user	0m0.255s
+sys	0m0.033s
+
+$ time node --import=tsx hello.ts
+hello, world
+
+real	0m0.135s
+user	0m0.126s
+sys	0m0.020s
+
+$ time node --import=./dist/esm/hooks/import.mjs hello.ts
+<span style="color:#00ffff">hello.ts</span>:<span style="color:#ffff00">2</span>:<span style="color:#ffff00">18</span> - <span style="color:#ff3030">error</span><span style="color:#404040"> TS2322: </span>Type 'string' is not assignable to type 'boolean'.
+
+<span style="color:#222222;background:#eeeeee">2</span> const f: Foo = { bar: 'hello' }
+<span style="color:#222222;background:#eeeeee"> </span> <span style="color:#ff3030">                 ~~~
+
+</span>  <span style="color:#00ffff">hello.ts</span>:<span style="color:#ffff00">1</span>:<span style="color:#ffff00">14
+</span>    <span style="color:#222222;background:#eeeeee">1</span> type Foo = { bar: boolean }
+    <span style="color:#222222;background:#eeeeee"> </span> <span style="color:#00ffff">             ~~~
+</span>    The expected type comes from property 'bar' which is declared here on type 'Foo'
+
+hello, world
+
+real	0m0.126s
+user	0m0.110s
+sys	0m0.022s
+</pre>
+
+## How is it so fast?
+
+![meme comic "We need this to run faster" "rewrite it in rust" "rewrite it in zig" "use basic caching and work skipping" guy gets thrown out window](./faster.jpg)
+
+Basic caching and work skipping.
