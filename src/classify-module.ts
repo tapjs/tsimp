@@ -21,8 +21,10 @@ const readPJType = cachedMtime(
   })
 )
 
-export const classifyModule = (fileName: string) => {
-  if (fileName.endsWith('.cts') || fileName.endsWith('.cjs')) {
+export const classifyModule = (fileName: string): PackageJsonType | 'json' => {
+  if (fileName.endsWith('.json')) {
+    return 'json'
+  } if (fileName.endsWith('.cts') || fileName.endsWith('.cjs')) {
     return 'commonjs'
   } else if (fileName.endsWith('.mts') || fileName.endsWith('.mjs')) {
     return 'module'

@@ -6,6 +6,7 @@ import { classifyModule } from '../src/classify-module.js'
 
 t.test('classify some modules', t => {
   const files = {
+    'index.json': '',
     'index.cjs': '',
     'index.cts': '',
     'index.mjs': '',
@@ -67,6 +68,7 @@ t.test('classify some modules', t => {
         t.strictSame(
           results,
           {
+            'index.json': 'json',
             'index.cjs': 'commonjs',
             'index.cts': 'commonjs',
             'index.mjs': 'module',
