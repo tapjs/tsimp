@@ -5,9 +5,9 @@
 import { foregroundChild } from 'foreground-child'
 import { readFileSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
-import { resolve as pathResolve } from 'node:path'
-import { fileURLToPath, pathToFileURL } from 'node:url'
 import Module from 'node:module'
+import { resolve as pathResolve } from 'node:path'
+import { pathToFileURL } from 'node:url'
 
 const [sMajor, sMinor] = process.versions.node.split('.')
 /* c8 ignore start */

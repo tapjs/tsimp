@@ -3,6 +3,7 @@ import { MessageChannel } from 'node:worker_threads'
 import { DaemonClient } from './client.js'
 import { getUrl } from './get-url.js'
 import './hooks/require.js'
+export * from './client.js'
 export * from './types.js'
 
 //@ts-ignore
@@ -21,8 +22,6 @@ if (typeof Module.register === 'function') {
 
   port1.postMessage({ stderrIsTTY: !!process.stderr.isTTY })
 }
-
-export * from './client.js'
 
 // the imp is a client of the daemon
 export const tsimp = new DaemonClient()

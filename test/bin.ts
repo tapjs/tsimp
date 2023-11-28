@@ -23,7 +23,7 @@ t.test('help', async t => {
 t.test('stop', async t => {
   run(['--stop'])
   t.throws(() =>
-    process.kill('SIGTERM', Number(readFileSync('.tsimp/daemon/pid')))
+    process.kill(Number(readFileSync('.tsimp/daemon/pid')), 'SIGTERM')
   )
 })
 

@@ -6,6 +6,7 @@ import { SockDaemonServer } from 'sock-daemon'
 import { fileURLToPath } from 'url'
 import { equivalents, isTSExt, tsExts } from '../equivalents.js'
 import { getUrl } from '../get-url.js'
+import { fileExists } from '../ts-sys-cached.js'
 import {
   CompileResult,
   PreloadResult,
@@ -19,7 +20,6 @@ import {
 } from '../types.js'
 import { getLanguageService } from './language-service.js'
 import { load } from './load.js'
-import { fileExists } from '../ts-sys-cached.js'
 
 export const serviceName = 'tsimp'
 export const daemonScript = fileURLToPath(
