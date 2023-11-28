@@ -226,33 +226,6 @@ when there are compilation diagnostics.
   diagnostics. (Similar to ts-node's `TS_NODE_TRANSPILE_ONLY=1`
   option.)
 
-You can also set `diagnostics` as a top-level field in the
-`tsimp` object in `tsconfig.json`. For example:
-
-```json
-{
-  "compilerOptions": {
-    "rootDir": "./src",
-    "declaration": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "inlineSources": true,
-    "jsx": "react",
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
-    "noUncheckedIndexedAccess": true,
-    "resolveJsonModule": true,
-    "skipLibCheck": false,
-    "sourceMap": false,
-    "strict": true,
-    "target": "es2022"
-  }
-  "tsimp": {
-    "diagnostics": "error"
-  }
-}
-```
-
 ## How fast is it?
 
 If the daemon is running, it's very fast, even if type checking
@@ -314,6 +287,6 @@ sys	0m0.022s
 
 ## How is it so fast?
 
-![meme comic "We need this to run faster" "rewrite it in rust" "rewrite it in zig" "use basic caching and work skipping" guy gets thrown out window](./faster.jpg)
+![meme comic "We need this to run faster" "rewrite it in rust" "rewrite it in zig" "use basic caching and work skipping" guy gets thrown out window](https://github.com/tapjs/tsimp/raw/main/faster.jpg)
 
 Basic caching and work skipping.

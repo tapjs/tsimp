@@ -32,6 +32,11 @@ t.test('start', async t => {
   t.equal(statSync('.tsimp/daemon/pid').isFile(), true)
 })
 
+t.test('restart', async t => {
+  run(['--restart'])
+  t.equal(statSync('.tsimp/daemon/pid').isFile(), true)
+})
+
 t.test('clear', async t => {
   run(['--clear'])
   t.throws(() => statSync('.tsimp'))

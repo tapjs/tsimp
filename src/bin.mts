@@ -35,28 +35,33 @@ const usage = () =>
 
 Flags:
 
---start Start the persistent daemon and preload the TypeScript
-        program object for typecheck compilation.
---stop  Kill the persistent daemon process.
---clear Kill daemon and clear all cached data and logs.
---ping  Issue a PING request to daemon and print result.
---help  You're looking at it.
---log   Display the daemon log (ie, \`cat .tsimp/daemon/log\`)
+--start   Start the persistent daemon and preload the TypeScript
+          program object for typecheck compilation.
+--stop    Kill the persistent daemon process.
+--restart Stop and then start again.
+--clear   Kill daemon and clear all cached data and logs.
+--ping    Issue a PING request to daemon and print result. Will start
+          the daemon if not already running.
+--help    You're looking at it.
+--log     Display the service log (ie, \`cat .tsimp/daemon/log\`)
 
 --compile <fileName>
-        Compile the specified TypeScript fileName, printing code
-        to stdout and diagnostics to stderr.
+          Compile the specified TypeScript fileName, printing code
+          to stdout and diagnostics to stderr.
+
+--check <fileName>
+          Same as --compile, but do not output the code.
 
 --resolve <module> [<parent>]
-        Resolve the specified module name (ie, find the .ts file for
-        a .js import specifier). Will print either a full file://
-        url to the found module, or echo the specifier back.
+          Resolve the specified module name (ie, find the .ts file for
+          a .js import specifier). Will print either a full file://
+          url to the found module, or echo the specifier back.
 
 Flags have no effect unless they are the first argument.
 
-If none of the above flags are specified, then tsimp runs node using the
-appropriate '--loader=tsimp/loader' or  '--import=tsimp/import' for the
-current node version.
+If none of the above flags are specified, then tsimp runs node using
+'--loader=tsimp/loader' or  '--import=tsimp/import', as appropriate for
+the current node version.
 
 All other args are just normal node arguments.
 
@@ -134,6 +139,10 @@ switch (process.argv[2]) {
     process.exit(0)
   case '--clear':
     await clearCache()
+    process.exit(0)
+  case '--restart':
+    await stopDaemon()
+    await startDaemon()
     process.exit(0)
   case '--start':
     await startDaemon()
