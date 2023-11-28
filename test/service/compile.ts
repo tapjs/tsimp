@@ -107,8 +107,13 @@ for (const tsconfigModule of ['commonjs', 'esnext', 'nodenext']) {
                 `${process.argv[0]} --enable-source-maps ${outputPath}`
               ).toString()
               const stackTracePath =
-                stdout.match(/^\s+at [^\(]+\(([^:]+)/m)?.[1] ?? ''
-              t.equal(resolve(stackTracePath), resolve(sourcePath))
+                stdout.match(
+                  /^\s+at [^\(]+\((([a-zA-Z]:)?[^:]+)/im
+                )?.[1] ?? ''
+              t.equal(
+                resolve(stackTracePath).toLowerCase(),
+                resolve(sourcePath).toLowerCase()
+              )
             })
             t.test('chdir', async () => process.chdir(cwd))
           })
