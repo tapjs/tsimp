@@ -118,6 +118,31 @@ t.test('resolve', async t => {
     }),
     {}
   )
+
+  t.strictSame(
+    ds.handle({
+      id: 'id',
+      action: 'resolve',
+      url:
+        String(pathToFileURL(resolve(dir, 'foo.ts'))) + '?name=value',
+    }),
+    {
+      fileName:
+        String(pathToFileURL(resolve(dir, 'foo.ts'))) + '?name=value',
+    }
+  )
+  t.strictSame(
+    ds.handle({
+      id: 'id',
+      action: 'resolve',
+      url:
+        String(pathToFileURL(resolve(dir, 'foo.js'))) + '?name=value',
+    }),
+    {
+      fileName:
+        String(pathToFileURL(resolve(dir, 'foo.ts'))) + '?name=value',
+    }
+  )
 })
 
 t.test('compile', async t => {
