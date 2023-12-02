@@ -84,7 +84,11 @@ export class DaemonServer extends SockDaemonServer<
     if (target.startsWith('file://')) {
       const tsFile = findTsFile(target)
       if (tsFile) {
-        return { fileName: String(pathToFileURL(tsFile)) }
+        const queryIndex = target.indexOf('?')
+        const query = queryIndex >= 0 ? target.slice(queryIndex) : ''
+        return {
+          fileName: String(pathToFileURL(tsFile)) + query,
+        }
       }
     }
     return {}
