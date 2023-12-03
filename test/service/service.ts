@@ -45,7 +45,7 @@ t.test('resolve', async t => {
       url: String(pathToFileURL(resolve(dir, 'foo.ts'))),
     }),
     {
-      fileName: String(pathToFileURL(resolve(dir, 'foo.ts'))),
+      url: String(pathToFileURL(resolve(dir, 'foo.ts'))),
     }
   )
   t.strictSame(
@@ -55,7 +55,7 @@ t.test('resolve', async t => {
       url: String(pathToFileURL(resolve(dir, 'foo.js'))),
     }),
     {
-      fileName: String(pathToFileURL(resolve(dir, 'foo.ts'))),
+      url: String(pathToFileURL(resolve(dir, 'foo.ts'))),
     }
   )
   t.strictSame(
@@ -65,7 +65,7 @@ t.test('resolve', async t => {
       url: String(pathToFileURL(resolve(dir, 'bar.js'))),
     }),
     {
-      fileName: String(pathToFileURL(resolve(dir, 'bar.tsx'))),
+      url: String(pathToFileURL(resolve(dir, 'bar.tsx'))),
     }
   )
 
@@ -77,7 +77,7 @@ t.test('resolve', async t => {
       parentURL: String(pathToFileURL(resolve(dir, 'bar.ts'))),
     }),
     {
-      fileName: String(pathToFileURL(resolve(dir, 'foo.ts'))),
+      url: String(pathToFileURL(resolve(dir, 'foo.ts'))),
     }
   )
   t.strictSame(
@@ -88,7 +88,7 @@ t.test('resolve', async t => {
       parentURL: String(pathToFileURL(resolve(dir, 'bar.js'))),
     }),
     {
-      fileName: String(pathToFileURL(resolve(dir, 'foo.ts'))),
+      url: String(pathToFileURL(resolve(dir, 'foo.ts'))),
     }
   )
   t.strictSame(
@@ -99,7 +99,7 @@ t.test('resolve', async t => {
       parentURL: String(pathToFileURL(resolve(dir, 'foo.js'))),
     }),
     {
-      fileName: String(pathToFileURL(resolve(dir, 'bar.tsx'))),
+      url: String(pathToFileURL(resolve(dir, 'bar.tsx'))),
     }
   )
 
@@ -127,7 +127,7 @@ t.test('resolve', async t => {
         String(pathToFileURL(resolve(dir, 'foo.ts'))) + '?name=value',
     }),
     {
-      fileName:
+      url:
         String(pathToFileURL(resolve(dir, 'foo.ts'))) + '?name=value',
     }
   )
@@ -139,7 +139,7 @@ t.test('resolve', async t => {
         String(pathToFileURL(resolve(dir, 'foo.js'))) + '?name=value',
     }),
     {
-      fileName:
+      url:
         String(pathToFileURL(resolve(dir, 'foo.ts'))) + '?name=value',
     }
   )

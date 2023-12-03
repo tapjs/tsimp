@@ -62,12 +62,22 @@ export const resolve: ResolveHook = async (
         String(new URL(url, parentURL))
       : url
   return nextResolve(
-    target.startsWith('file://') && !target.startsWith(nm)
+    target.startsWith('file://') && !startsWithCS(target, nm)
       ? await getClient().resolve(url, parentURL)
       : url,
     context
   )
 }
+
+// case (in-)sensitive String.startsWith
+const cs =
+  process.platform !== 'win32' && process.platform !== 'darwin'
+/* c8 ignore start */
+const startsWithCS = cs
+  ? (haystack: string, needle: string) => haystack.startsWith(needle)
+  : (haystack: string, needle: string) =>
+      haystack.toUpperCase().startsWith(needle.toUpperCase())
+/* c8 ignore stop */
 
 // ts programs have import filenames like ./x.js, but the source
 // lives in ./x.ts. Find the source and compile it.
@@ -75,7 +85,7 @@ const nm = String(pathToFileURL(pathResolve('node_modules'))) + '/'
 const proj = String(pathToFileURL(process.cwd())) + '/'
 let hookedCJS = false
 export const load: LoadHook = async (url, context, nextLoad) => {
-  if (url.startsWith(proj) && !url.startsWith(nm)) {
+  if (startsWithCS(url, proj) && !startsWithCS(url, nm)) {
     const inputFile = fileURLToPath(url)
     const { fileName, diagnostics } = await getClient().compile(
       inputFile,

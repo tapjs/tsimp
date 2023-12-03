@@ -87,15 +87,19 @@ export class DaemonClient extends SockDaemonClient<
   }
 
   /**
-   * Translate a file like ./src/foo.js into ./src/foo.ts
+   * Translate a module identifier like ./src/foo.js into
+   * file:///path/to/src/foo.ts
    * A file that isn't .ts or isn't a file:// url is returned as-is.
    */
   async resolve(url: string, parentURL?: string): Promise<string> {
-    const { fileName } = (await this.request({
-      action: 'resolve',
-      url,
-      parentURL,
-    })) as ResolveResult
-    return fileName ?? url
+    return (
+      (
+        (await this.request({
+          action: 'resolve',
+          url,
+          parentURL,
+        })) as ResolveResult
+      )?.url ?? url
+    )
   }
 }

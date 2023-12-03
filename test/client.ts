@@ -32,12 +32,15 @@ t.strictSame(await client.preload(), {})
 t.strictSame(requests, [{ action: 'preload' }])
 requests.length = 0
 
-MockSDC.response = { fileName: 'some-file.js' }
-t.strictSame(await client.resolve('file:///x/y/z.ts'), 'some-file.js')
+MockSDC.response = { url: 'file:///x/y/z/some-file.ts' }
+t.strictSame(
+  await client.resolve('file:///x/y/z.js'),
+  'file:///x/y/z/some-file.ts'
+)
 t.strictSame(requests, [
   {
     action: 'resolve',
-    url: 'file:///x/y/z.ts',
+    url: 'file:///x/y/z.js',
     parentURL: undefined,
   },
 ])

@@ -81,13 +81,14 @@ export class DaemonServer extends SockDaemonServer<
       url.startsWith('./') || url.startsWith('../')
         ? String(new URL(url, parentURL))
         : url
-    if (target.startsWith('file://')) {
-      const tsFile = findTsFile(target)
+    const tsFile = findTsFile(target)
+    if (tsFile) {
+      const url = new URL(target)
+      url.pathname = pathToFileURL(tsFile).pathname
+
       if (tsFile) {
-        const queryIndex = target.indexOf('?')
-        const query = queryIndex >= 0 ? target.slice(queryIndex) : ''
         return {
-          fileName: String(pathToFileURL(tsFile)) + query,
+          url: String(url),
         }
       }
     }

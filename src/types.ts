@@ -43,7 +43,7 @@ export type ServiceResolveRequest = MessageBase &
   }
 
 export type ResolveResult = {
-  fileName?: string
+  url?: string
 }
 export type ServiceResolveResult = MessageBase &
   ResolveResult & {
