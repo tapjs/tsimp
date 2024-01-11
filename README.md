@@ -76,7 +76,7 @@ tsimp my-typescript-program.ts
 
 Note that while `tsimp` run without any arguments will start the
 Node repl, and in that context it will be able to import/require
-typescript modules, it does _not_ include a repl that can run
+TypeScript modules, it does _not_ include a repl that can run
 TypeScript directly. This is just an import loader.
 
 In Node v20.6 and higher, you can also load `tsimp` in your
