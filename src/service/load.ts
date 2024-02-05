@@ -1,8 +1,7 @@
 // Load a module from disk, and compile it.
 // Result is cached by fileName + mtime, and cleared when config changes.
 import { cachedMtime } from '@isaacs/cached'
-import { writeFileSync } from 'fs'
-import { mkdirpSync } from 'mkdirp'
+import { mkdirSync, writeFileSync } from 'fs'
 import { relative, resolve } from 'path'
 import { ParsedCommandLine } from 'typescript'
 import { info } from '../debug.js'
@@ -74,7 +73,7 @@ export const load = (
 
   if (!didMkdirp) {
     didMkdirp = true
-    mkdirpSync(resolve(cwd, '.tsimp/compiled'))
+    mkdirSync(resolve(cwd, '.tsimp/compiled'), { recursive: true })
   }
   writeFileSync(outFile, outputText)
   return {
