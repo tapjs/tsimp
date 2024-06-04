@@ -1,4 +1,6 @@
 import { DaemonServer } from './service.js'
+import { markProcessAsDaemon } from '../debug.js'
+markProcessAsDaemon()
 const cwd = process.cwd()
 /* c8 ignore start */
 const home = (process.env.HOME ?? '').replace(/[\\\/]$/, '')
