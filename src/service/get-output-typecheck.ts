@@ -1,8 +1,9 @@
 // Get output with full type-checking from the LanguageService.
 
 import { relative } from 'path'
-import type ts from 'typescript'
+import ts from 'typescript'
 import { info, warn } from '../debug.js'
+import { readFile } from '../ts-sys-cached.js'
 import { addRootFile, updateFileVersion } from './file-versions.js'
 import { getLanguageService } from './language-service.js'
 import { markFileNameInternal } from './resolve-module-name-literals.js'
@@ -26,6 +27,30 @@ export const getOutputTypeCheck = (
   addRootFile(fileName)
   markFileNameInternal(fileName)
   updateFileVersion(fileName, code)
+
+  // TODO: It's not clear which fields on dependenciesInfo are relevant
+  // TODO: Ensure that preProcessFile looks for dependencies recursively
+  // TODO: Skip the step of putting the fileNames into a Set if it's
+  //       guaranteed that a given file won't be listed multiple times
+  const {
+    referencedFiles,
+    typeReferenceDirectives,
+    libReferenceDirectives,
+    importedFiles,
+  } = ts.preProcessFile(code)
+  const dependencyFileNames = new Set<string>()
+  for (const file of [
+    ...referencedFiles,
+    ...typeReferenceDirectives,
+    ...libReferenceDirectives,
+    ...importedFiles,
+  ]) {
+    dependencyFileNames.add(file.fileName)
+  }
+
+  for (const dependencyFileName of dependencyFileNames) {
+    updateFileVersion(dependencyFileName, readFile(fileName) || '')
+  }
 
   // if we can't get the source file, then return the code un-compiled.
   // Eg, loading a JS file if allowJs is not set.
