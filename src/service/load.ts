@@ -3,7 +3,7 @@
 import { cachedMtime } from '@isaacs/cached'
 import { mkdirSync, writeFileSync } from 'fs'
 import { relative, resolve } from 'path'
-import { ParsedCommandLine } from 'typescript'
+import { Diagnostic, ParsedCommandLine } from 'typescript'
 import { info } from '../debug.js'
 import { getOutputFile } from '../get-output-file.js'
 import {
@@ -31,30 +31,40 @@ export const load = (
   const config = tsconfig()
 
   if (lastConfig && config !== lastConfig) {
-    compileTypeCheck.cache.clear()
     compileTranspileOnly.cache.clear()
-    compileTypeCheck.mtimeCache.clear()
     compileTranspileOnly.mtimeCache.clear()
   }
   lastConfig = config
 
-  // compile to a file on disk, but only if the source has changed.
-  const compile = typeCheck ? compileTypeCheck : compileTranspileOnly
-  const cachedMtime = compile.mtimeCache.get(fileName)?.[0]
-  const newMtime = compile.getMtime(fileName)
+  let compile: (fileName: string) => {
+    outputText: string | undefined
+    diagnostics: Diagnostic[]
+  }
   const outFile = getOutputFile(fileName)
-  const cachedResult = compile.cache.get(fileName)
 
-  if (
-    cachedMtime &&
-    cachedMtime === newMtime &&
-    fileExists(outFile) &&
-    cachedResult
-  ) {
-    // saw this one, and have previous build available
-    return {
-      fileName: outFile,
-      diagnostics: reportAll(cachedResult.diagnostics, pretty),
+  // TODO: Re-enable caching of type-checked results
+  if (typeCheck) {
+    compile = compileTypeCheck
+  } else {
+    let cachedCompile = compileTranspileOnly
+    compile = cachedCompile
+
+    // Skip compiling if the source has not changed
+    const cachedMtime = cachedCompile.mtimeCache.get(fileName)?.[0]
+    const newMtime = cachedCompile.getMtime(fileName)
+    const cachedResult = cachedCompile.cache.get(fileName)
+
+    if (
+      cachedMtime &&
+      cachedMtime === newMtime &&
+      fileExists(outFile) &&
+      cachedResult
+    ) {
+      // saw this one, and have previous build available
+      return {
+        fileName: outFile,
+        diagnostics: reportAll(cachedResult.diagnostics, pretty),
+      }
     }
   }
 
@@ -82,12 +92,19 @@ export const load = (
   }
 }
 
-const compileTypeCheck = cachedMtime((fileName: string) => {
+// It's fine to cache the results of transpilation, as compileTranspileOnly does,
+// but it's not safe for this function to perform caching based purely on the
+// mtime of a single source file. A dependency may have (for example)
+// deleted something that the file was referencing.
+// TODO: Cache compile results based on the mtime of all affected files,
+//       not just the one we're currently getting the results for
+//       (update cachedMtime() to accept an array of paths)
+const compileTypeCheck = (fileName: string) => {
   const normalizedFileName: string = normalizeSlashes(fileName)
   /* c8 ignore next */
   const content = readFile(fileName) || ''
   return compile(content, normalizedFileName, true)
-})
+}
 
 const compileTranspileOnly = cachedMtime((fileName: string) => {
   const normalizedFileName: string = normalizeSlashes(fileName)
