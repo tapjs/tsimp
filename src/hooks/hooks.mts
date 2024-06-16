@@ -88,7 +88,7 @@ export const resolve: ResolveHook = async (
     }
   }
 
-  let target =
+  const target =
     /* c8 ignore start */
     parentURL && (url.startsWith('./') || url.startsWith('../'))
       ? /* c8 ignore stop */
