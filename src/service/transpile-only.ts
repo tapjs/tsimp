@@ -8,6 +8,7 @@ import ts from 'typescript'
 import { walkUp } from 'walk-up-path'
 import { normalizePath, readFile } from '../ts-sys-cached.js'
 import { tsconfig } from './tsconfig.js'
+import getPackageJSON from './get-package-json.js'
 
 // Basic technique lifted from ts-node's transpileOnly method.
 // Create a CompilerHost, and mock the loading of package.json
@@ -132,19 +133,11 @@ const createTsTranspileModule = ({
     packageJsonFileName = dir + '/package.json'
     if (pjType) packageJsonType = pjType
     else {
-      for (const d of walkUp(dir)) {
-        const pj = catcher(() => {
-          const json = readFile(d + '/package.json')
-          if (!json) return undefined
-          const pj = JSON.parse(json) as {
-            type?: 'commonjs' | 'module'
-          }
-          return pj
-        })
-        if (pj?.type) {
-          packageJsonType = pj.type
-          break
-        }
+      const pj = (getPackageJSON(dir))?.contents as {
+        type?: 'commonjs' | 'module'
+      };
+      if (pj?.type) {
+        packageJsonType = pj.type
       }
     }
 

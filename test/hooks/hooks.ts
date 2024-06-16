@@ -110,6 +110,54 @@ t.test('resolve', async t => {
   })
 })
 
+t.test('resolve with subpath import', async t => {
+  const dir = t.testdir({
+    'package.json': JSON.stringify({
+      "type": "module",
+      "imports": {
+        "#source/*": "./my/source/*"
+      }
+    }),
+
+    "project": {
+      'foo.ts': 'console.log("feet")',
+    }
+  })
+
+  const cwd = process.cwd()
+  process.chdir(dir + '/project')
+
+  const hooks = (await t.mockImport(
+    '../../dist/esm/hooks/hooks.mjs',
+    {
+      'node:fs': t.createMock(FS, { writeSync: mockWriteSync }),
+      '../../dist/esm/client.js': {
+        DaemonClient: MockDaemonClient,
+      },
+    }
+  )) as typeof import('../../dist/esm/hooks/hooks.mjs')
+
+  const nextResolve = (url: string, context: ResolveHookContext | undefined) => {
+    console.log(url);
+    return { url, parentURL: context?.parentURL }
+  }
+
+  t.strictSame(
+    await hooks.resolve(
+      '#source/subdir/constant.js',
+      {
+        parentURL: 'file:///asdf/asdf.js',
+        conditions: [],
+        importAssertions: {}
+      },
+      nextResolve
+    ),
+    { url: dir + '/my/source/subdir/constant.js', parentURL: 'file:///asdf/asdf.js' }
+  )
+
+  process.chdir(cwd)
+})
+
 t.test('load', async t => {
   t.test('not one of ours, just call nextLoad', async t => {
     delete MockDaemonClient.compileRequest
