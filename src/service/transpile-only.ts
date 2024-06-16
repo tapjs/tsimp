@@ -133,9 +133,9 @@ const createTsTranspileModule = ({
     packageJsonFileName = dir + '/package.json'
     if (pjType) packageJsonType = pjType
     else {
-      const pj = (getPackageJSON(dir))?.contents as {
+      const pj = getPackageJSON(dir)?.contents as {
         type?: 'commonjs' | 'module'
-      };
+      }
       if (pj?.type) {
         packageJsonType = pj.type
       }

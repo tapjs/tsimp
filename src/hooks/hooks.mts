@@ -58,31 +58,42 @@ export const resolve: ResolveHook = async (
 ) => {
   const { parentURL } = context
 
-  if (url.startsWith("#")) {
-    const { contents, pathToJSON } = getPackageJSON(process.cwd())!;
+  if (url.startsWith('#')) {
+    const { contents, pathToJSON } = getPackageJSON(process.cwd())!
     if (pathToJSON && contents) {
-      const { imports } = contents as { imports: Record<string, string> };
+      const { imports } = contents as {
+        imports: Record<string, string>
+      }
       if (imports) {
-        for (let [importSubpath, relativeSubpath] of Object.entries(imports)) {
-          if (!importSubpath.startsWith("#") || !importSubpath.endsWith("/*") || !relativeSubpath.endsWith("/*"))
-            continue;
-          importSubpath = relative(dirname(importSubpath), url);
-          if (importSubpath.includes("#"))
-            continue;
+        for (let [importSubpath, relativeSubpath] of Object.entries(
+          imports
+        )) {
+          if (
+            !importSubpath.startsWith('#') ||
+            !importSubpath.endsWith('/*') ||
+            !relativeSubpath.endsWith('/*')
+          )
+            continue
+          importSubpath = relative(dirname(importSubpath), url)
+          if (importSubpath.includes('#')) continue
 
-          url = pathResolve(dirname(pathToJSON), dirname(relativeSubpath), importSubpath)
-          break;
+          url = pathResolve(
+            dirname(pathToJSON),
+            dirname(relativeSubpath),
+            importSubpath
+          )
+          break
         }
       }
     }
   }
 
   let target =
-      /* c8 ignore start */
-      parentURL && (url.startsWith('./') || url.startsWith('../'))
-        ? /* c8 ignore stop */
-          String(new URL(url, parentURL))
-        : url
+    /* c8 ignore start */
+    parentURL && (url.startsWith('./') || url.startsWith('../'))
+      ? /* c8 ignore stop */
+        String(new URL(url, parentURL))
+      : url
 
   return nextResolve(
     target.startsWith('file://') && !startsWithCS(target, nm)

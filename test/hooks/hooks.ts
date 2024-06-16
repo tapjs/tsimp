@@ -113,15 +113,15 @@ t.test('resolve', async t => {
 t.test('resolve with subpath import', async t => {
   const dir = t.testdir({
     'package.json': JSON.stringify({
-      "type": "module",
-      "imports": {
-        "#source/*": "./my/source/*"
-      }
+      type: 'module',
+      imports: {
+        '#source/*': './my/source/*',
+      },
     }),
 
-    "project": {
+    project: {
       'foo.ts': 'console.log("feet")',
-    }
+    },
   })
 
   const cwd = process.cwd()
@@ -137,8 +137,10 @@ t.test('resolve with subpath import', async t => {
     }
   )) as typeof import('../../dist/esm/hooks/hooks.mjs')
 
-  const nextResolve = (url: string, context: ResolveHookContext | undefined) => {
-    console.log(url);
+  const nextResolve = (
+    url: string,
+    context: ResolveHookContext | undefined
+  ) => {
     return { url, parentURL: context?.parentURL }
   }
 
@@ -148,11 +150,14 @@ t.test('resolve with subpath import', async t => {
       {
         parentURL: 'file:///asdf/asdf.js',
         conditions: [],
-        importAssertions: {}
+        importAssertions: {},
       },
       nextResolve
     ),
-    { url: dir + '/my/source/subdir/constant.js', parentURL: 'file:///asdf/asdf.js' }
+    {
+      url: dir + '/my/source/subdir/constant.js',
+      parentURL: 'file:///asdf/asdf.js',
+    }
   )
 
   process.chdir(cwd)
