@@ -6,7 +6,7 @@ import type {
   LoadHook,
   ResolveHook,
 } from 'node:module'
-import { resolve as pathResolve, dirname } from 'node:path'
+import { resolve as pathResolve, dirname, relative } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { format } from 'node:util'
 import { MessagePort } from 'node:worker_threads'
@@ -14,7 +14,6 @@ import { classifyModule } from '../classify-module.js'
 import { DaemonClient } from '../client.js'
 import { getDiagMode } from '../diagnostic-mode.js'
 import getPackageJSON from '../service/get-package-json.js'
-import { relative } from 'path'
 
 // in some cases on the loader thread, console.error doesn't actually
 // print. sync write to fd 1 instead.
