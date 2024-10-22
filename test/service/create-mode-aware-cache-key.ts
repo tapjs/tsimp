@@ -5,5 +5,5 @@ import { createModeAwareCacheKey } from '../../src/service/create-mode-aware-cac
 t.equal(createModeAwareCacheKey('asdf'), 'asdf')
 t.equal(
   createModeAwareCacheKey('asdf', ts.ModuleKind.CommonJS),
-  `${ts.ModuleKind.CommonJS}|asdf`
+  `${ts.ModuleKind.CommonJS}|asdf`,
 )

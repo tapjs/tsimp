@@ -14,7 +14,7 @@ t.test('preload', async t => {
           }
         },
       },
-    }
+    },
   )) as typeof import('../../src/service/service.js')
   const ds = new DaemonServer()
   t.strictSame(
@@ -22,7 +22,7 @@ t.test('preload', async t => {
       id: 'id',
       action: 'preload',
     }),
-    {}
+    {},
   )
 })
 
@@ -34,7 +34,7 @@ t.test('resolve', async t => {
   })
 
   const { DaemonServer } = (await t.mockImport(
-    '../../src/service/service.js'
+    '../../src/service/service.js',
   )) as typeof import('../../src/service/service.js')
   t.equal(DaemonServer.serviceName, 'tsimp')
   const ds = new DaemonServer()
@@ -46,7 +46,7 @@ t.test('resolve', async t => {
     }),
     {
       url: String(pathToFileURL(resolve(dir, 'foo.ts'))),
-    }
+    },
   )
   t.strictSame(
     ds.handle({
@@ -56,7 +56,7 @@ t.test('resolve', async t => {
     }),
     {
       url: String(pathToFileURL(resolve(dir, 'foo.ts'))),
-    }
+    },
   )
   t.strictSame(
     ds.handle({
@@ -66,7 +66,7 @@ t.test('resolve', async t => {
     }),
     {
       url: String(pathToFileURL(resolve(dir, 'bar.tsx'))),
-    }
+    },
   )
 
   t.strictSame(
@@ -78,7 +78,7 @@ t.test('resolve', async t => {
     }),
     {
       url: String(pathToFileURL(resolve(dir, 'foo.ts'))),
-    }
+    },
   )
   t.strictSame(
     ds.handle({
@@ -89,7 +89,7 @@ t.test('resolve', async t => {
     }),
     {
       url: String(pathToFileURL(resolve(dir, 'foo.ts'))),
-    }
+    },
   )
   t.strictSame(
     ds.handle({
@@ -100,7 +100,7 @@ t.test('resolve', async t => {
     }),
     {
       url: String(pathToFileURL(resolve(dir, 'bar.tsx'))),
-    }
+    },
   )
 
   t.strictSame(
@@ -109,14 +109,14 @@ t.test('resolve', async t => {
       action: 'resolve',
       url: String(pathToFileURL(resolve(dir, 'does-not-exist'))),
     }),
-    {}
+    {},
   )
   t.strictSame(
     ds.handle({
       id: 'id',
       action: 'preload',
     }),
-    {}
+    {},
   )
 
   t.strictSame(
@@ -129,7 +129,7 @@ t.test('resolve', async t => {
     {
       url:
         String(pathToFileURL(resolve(dir, 'foo.ts'))) + '?name=value',
-    }
+    },
   )
   t.strictSame(
     ds.handle({
@@ -141,7 +141,7 @@ t.test('resolve', async t => {
     {
       url:
         String(pathToFileURL(resolve(dir, 'foo.ts'))) + '?name=value',
-    }
+    },
   )
 })
 
@@ -160,7 +160,7 @@ t.test('compile', async t => {
       '../../src/service/load.js': {
         load: () => compileResult,
       },
-    }
+    },
   )) as typeof import('../../src/service/service.js')
   const ds = new DaemonServer()
   t.strictSame(
@@ -171,6 +171,6 @@ t.test('compile', async t => {
       diagMode: 'warn',
       pretty: true,
     }),
-    compileResult
+    compileResult,
   )
 })

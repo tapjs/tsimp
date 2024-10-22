@@ -41,7 +41,7 @@ t.test('classify some modules', t => {
         Object.entries(files).map(([fileName]) => [
           fileName,
           classifyModule(resolve(d, fileName)),
-        ])
+        ]),
       )
       t.matchSnapshot(results)
       t.end()
@@ -56,14 +56,14 @@ t.test('classify some modules', t => {
         const d = resolve(dir, pjType)
         writeFileSync(
           resolve(d, 'package.json'),
-          JSON.stringify({ type: 'module' })
+          JSON.stringify({ type: 'module' }),
         )
 
         const results = Object.fromEntries(
           Object.entries(files).map(([fileName]) => [
             fileName,
             classifyModule(resolve(d, fileName)),
-          ])
+          ]),
         )
         t.strictSame(
           results,
@@ -78,7 +78,7 @@ t.test('classify some modules', t => {
             'index.js': 'module',
             'index.ts': 'module',
           },
-          'should default to module now'
+          'should default to module now',
         )
         t.end()
       })
@@ -93,11 +93,11 @@ t.test('classify some modules', t => {
         '../src/ts-sys-cached.js': {
           readFile: () => undefined,
         },
-      }
+      },
     )
     t.equal(
       classifyModule(resolve(t.testdirName, 'index.js')),
-      'commonjs'
+      'commonjs',
     )
   })
 

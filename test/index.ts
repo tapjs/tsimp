@@ -8,7 +8,7 @@ const TSIMP = (await t.mockImport('../src/index.js', {
     register: (url: string, args: any) => {
       t.equal(
         url.toLowerCase(),
-        getUrl('./hooks/loader.mjs').toLowerCase()
+        getUrl('./hooks/loader.mjs').toLowerCase(),
       )
       const { parentURL: pu } = args
       t.equal(pu.toLowerCase(), getUrl('./index.js').toLowerCase())

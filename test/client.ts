@@ -22,8 +22,8 @@ t.equal(DaemonClient.serviceName, 'tsimp')
 t.equal(
   DaemonClient.daemonScript.toLowerCase(),
   fileURLToPath(
-    new URL('../src/service/daemon.mjs', import.meta.url)
-  ).toLowerCase()
+    new URL('../src/service/daemon.mjs', import.meta.url),
+  ).toLowerCase(),
 )
 
 MockSDC.response = {}
@@ -35,7 +35,7 @@ requests.length = 0
 MockSDC.response = { url: 'file:///x/y/z/some-file.ts' }
 t.strictSame(
   await client.resolve('file:///x/y/z.js'),
-  'file:///x/y/z/some-file.ts'
+  'file:///x/y/z/some-file.ts',
 )
 t.strictSame(requests, [
   {
@@ -48,7 +48,7 @@ requests.length = 0
 MockSDC.response = {}
 t.strictSame(
   await client.resolve('file:///x/y/z.js', 'file:///parent'),
-  'file:///x/y/z.js'
+  'file:///x/y/z.js',
 )
 t.strictSame(requests, [
   {

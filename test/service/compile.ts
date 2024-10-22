@@ -18,9 +18,9 @@ for (const tsconfigModule of ['commonjs', 'esnext', 'nodenext']) {
                 compilerOptions: {
                   module: tsconfigModule,
                   moduleResolution:
-                    tsconfigModule === 'nodenext'
-                      ? 'nodenext'
-                      : 'node10',
+                    tsconfigModule === 'nodenext' ? 'nodenext' : (
+                      'node10'
+                    ),
                 },
               }),
               'file.ts': `
@@ -58,9 +58,9 @@ for (const tsconfigModule of ['commonjs', 'esnext', 'nodenext']) {
               '../../src/service/compile.js',
               {
                 '../../src/service/tsconfig.js': await t.mockImport(
-                  '../../src/service/tsconfig.js'
+                  '../../src/service/tsconfig.js',
                 ),
-              }
+              },
             )) as typeof import('../../src/service/compile.js')
             for (const file of [
               'mixed.ts',
@@ -73,21 +73,21 @@ for (const tsconfigModule of ['commonjs', 'esnext', 'nodenext']) {
                 const { outputText, diagnostics } = compile(
                   fixture[file],
                   `${dir}/${file}`,
-                  typeCheck
+                  typeCheck,
                 )
                 const d = diagnostics.map(d => [
                   d.file && basename(d.file.fileName),
                   d.code,
-                  typeof d.messageText === 'object'
-                    ? d.messageText.messageText
-                    : d.messageText,
+                  typeof d.messageText === 'object' ?
+                    d.messageText.messageText
+                  : d.messageText,
                 ])
                 t.matchSnapshot(
                   outputText?.replace(
                     /# sourceMappingURL=.*/,
-                    '# sourceMappingURL='
+                    '# sourceMappingURL=',
                   ),
-                  'compiled'
+                  'compiled',
                 )
                 t.matchSnapshot(d, 'diagnostics')
               })
@@ -97,22 +97,22 @@ for (const tsconfigModule of ['commonjs', 'esnext', 'nodenext']) {
               const { outputText } = compile(
                 fixture['nested']['sourcemap.ts'],
                 sourcePath,
-                typeCheck
+                typeCheck,
               )
 
               const outputPath = `${dir}/nested/sourcemap.js`
               writeFileSync(outputPath, outputText ?? '')
 
               const stdout = execSync(
-                `${process.argv[0]} --enable-source-maps ${outputPath}`
+                `${process.argv[0]} --enable-source-maps ${outputPath}`,
               ).toString()
               const stackTracePath =
                 stdout.match(
-                  /^\s+at [^\(]+\((([a-zA-Z]:)?[^:]+)/im
+                  /^\s+at [^\(]+\((([a-zA-Z]:)?[^:]+)/im,
                 )?.[1] ?? ''
               t.equal(
                 resolve(stackTracePath).toLowerCase(),
-                resolve(sourcePath).toLowerCase()
+                resolve(sourcePath).toLowerCase(),
               )
             })
             t.test('chdir', async () => process.chdir(cwd))

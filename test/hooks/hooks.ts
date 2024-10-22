@@ -43,7 +43,7 @@ class MockDaemonClient {
   async compile(
     inputFile: string,
     diagMode: DiagMode = 'warn',
-    pretty: boolean = false
+    pretty: boolean = false,
   ) {
     MockDaemonClient.compileRequest = { inputFile, diagMode, pretty }
     return MockDaemonClient.compileResponse
@@ -100,9 +100,9 @@ t.test('resolve', async t => {
     await hooks.resolve(
       './xyz',
       { parentURL: 'file:///asdf/asdf.js' },
-      nextResolve
+      nextResolve,
     ),
-    ['file:///some/test.ts', { parentURL: 'file:///asdf/asdf.js' }]
+    ['file:///some/test.ts', { parentURL: 'file:///asdf/asdf.js' }],
   )
   t.strictSame(MockDaemonClient.resolveRequest, {
     url: './xyz',
@@ -190,13 +190,13 @@ t.test('load', async t => {
         '../../dist/esm/client.js': {
           DaemonClient: MockDaemonClient,
         },
-      }
+      },
     )) as typeof import('../../dist/esm/hooks/hooks.mjs')
 
     const nextLoad = (_url: string, _context?: LoadHookContext) =>
       ({
         format: 'commonjs',
-      } as unknown as LoadFnOutput)
+      }) as unknown as LoadFnOutput
     delete MockDaemonClient.compileRequest
     MockDaemonClient.compileResponse = {
       fileName: resolve(dir, 'project/foo.js'),
@@ -206,7 +206,7 @@ t.test('load', async t => {
     const result = await hooks.load(
       String(pathToFileURL(resolve(dir, 'project/foo.ts'))),
       { conditions: [], format: 'commonjs', importAssertions: {} },
-      nextLoad
+      nextLoad,
     )
     t.same(result, {
       format: 'commonjs',
@@ -216,7 +216,7 @@ t.test('load', async t => {
     const outRes = await hooks.load(
       String(pathToFileURL(resolve(dir, 'outside.js'))),
       { conditions: [], format: 'commonjs', importAssertions: {} },
-      nextLoad
+      nextLoad,
     )
     t.same(outRes, {
       format: 'commonjs',

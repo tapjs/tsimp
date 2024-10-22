@@ -20,7 +20,7 @@ export const getModuleResolutionCache = () => {
       getCurrentDirectory(),
       getCanonicalFileName,
       tsconfig().options,
-      undefined
+      undefined,
     ))
   )
 }
@@ -43,7 +43,7 @@ const isFileKnownToBeInternal = (filename: string) =>
 const fixupResolvedModule = (
   resolvedModule:
     | ts.ResolvedModule
-    | ts.ResolvedTypeReferenceDirective
+    | ts.ResolvedTypeReferenceDirective,
 ) => {
   const { resolvedFileName } = resolvedModule
   /* c8 ignore next */
@@ -72,7 +72,7 @@ const fixupResolvedModule = (
 }
 
 export const getResolveModuleNameLiterals = (
-  host: ts.LanguageServiceHost
+  host: ts.LanguageServiceHost,
 ): Exclude<
   ts.LanguageServiceHost['resolveModuleNameLiterals'],
   undefined
@@ -83,31 +83,31 @@ export const getResolveModuleNameLiterals = (
     redirectedReference: ts.ResolvedProjectReference | undefined,
     options: ts.CompilerOptions,
     containingSourceFile: ts.SourceFile,
-    reusedNames: readonly ts.StringLiteralLike[] | undefined
+    reusedNames: readonly ts.StringLiteralLike[] | undefined,
   ) => readonly ts.ResolvedModuleWithFailedLookupLocations[] = (
     moduleLiterals,
     containingFile,
     redirectedReference,
     options,
     containingSourceFile,
-    _reusedNames
+    _reusedNames,
   ) => {
     return moduleLiterals.map((moduleLiteral, i) => {
       const moduleName = moduleLiteral.text
-      const mode = containingSourceFile
-        ? (
+      const mode =
+        containingSourceFile ?
+          (
             ts as any as {
               getModeForResolutionAtIndex?(
                 containingSourceFile: ts.SourceFile,
-                index: number
+                index: number,
               ):
                 | ts.ModuleKind.CommonJS
                 | ts.ModuleKind.ESNext
                 | undefined
             }
           ).getModeForResolutionAtIndex?.(containingSourceFile, i)
-        : /* c8 ignore start */
-          undefined
+        : /* c8 ignore start */ undefined
       /* c8 ignore stop */
       let { resolvedModule } = ts.resolveModuleName(
         moduleName,
@@ -116,7 +116,7 @@ export const getResolveModuleNameLiterals = (
         host,
         getModuleResolutionCache(),
         redirectedReference,
-        mode
+        mode,
       )
       if (!resolvedModule) {
         const lastDotIndex = moduleName.lastIndexOf('.')
@@ -125,7 +125,7 @@ export const getResolveModuleNameLiterals = (
         if (ext) {
           const replacements = equivalents(
             moduleName,
-            mode !== ts.ModuleKind.ESNext
+            mode !== ts.ModuleKind.ESNext,
           )
           for (const rep of replacements) {
             ;({ resolvedModule } = ts.resolveModuleName(
@@ -135,7 +135,7 @@ export const getResolveModuleNameLiterals = (
               host,
               getModuleResolutionCache(),
               redirectedReference,
-              mode
+              mode,
             ))
             if (resolvedModule) break
           }

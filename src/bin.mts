@@ -13,21 +13,20 @@ const [sMajor, sMinor] = process.versions.node.split('.')
 /* c8 ignore start */
 if (!sMajor || !sMinor) {
   throw new Error(
-    'could not determine node version: ' + process.versions.node
+    'could not determine node version: ' + process.versions.node,
   )
 }
 
 const useImport = typeof Module.register === 'function'
 const importScript = String(
-  new URL('./hooks/import.mjs', import.meta.url)
+  new URL('./hooks/import.mjs', import.meta.url),
 )
 const loaderScript = String(
-  new URL('./hooks/legacy-loader.mjs', import.meta.url)
+  new URL('./hooks/legacy-loader.mjs', import.meta.url),
 )
 /* c8 ignore start */
-const addArg = useImport
-  ? `--import=${importScript}`
-  : `--loader=${loaderScript}`
+const addArg =
+  useImport ? `--import=${importScript}` : `--loader=${loaderScript}`
 /* c8 ignore stop */
 
 const usage = () =>
@@ -98,9 +97,9 @@ const log = async () => {
       await readFile('.tsimp/daemon/log', 'utf8').catch(
         e =>
           'log could not be read: ' +
-          (e as NodeJS.ErrnoException).code
+          (e as NodeJS.ErrnoException).code,
       )
-    ).trimEnd()
+    ).trimEnd(),
   )
 }
 
@@ -108,7 +107,7 @@ const compile = async (src: string) => {
   const { DaemonClient } = await import('./client.js')
   const start = performance.now()
   const { fileName, diagnostics } = await new DaemonClient().compile(
-    src
+    src,
   )
   const duration =
     Math.floor((performance.now() - start) * 1000) / 1000

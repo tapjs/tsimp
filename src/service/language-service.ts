@@ -73,7 +73,7 @@ export const getLanguageService = (): LanguageServiceWithHost => {
     getScriptVersion: (fileName: string) =>
       String(fileVersions.get(fileName)),
     getScriptSnapshot: (
-      fileName: string
+      fileName: string,
     ): ts.IScriptSnapshot | undefined => {
       let contents = fileContents.get(fileName)
 
@@ -99,7 +99,7 @@ export const getLanguageService = (): LanguageServiceWithHost => {
       resolveTypeReferenceDirectiveReferences:
         getResolveTypeReferenceDirectiveReferences(
           host,
-          getModuleResolutionCache()
+          getModuleResolutionCache(),
         ),
       resolveModuleNameLiterals: getResolveModuleNameLiterals(host),
       getModuleResolutionCache,
@@ -107,14 +107,14 @@ export const getLanguageService = (): LanguageServiceWithHost => {
 
   const registry = ts.createDocumentRegistry(
     ts.sys.useCaseSensitiveFileNames,
-    getCurrentDirectory()
+    getCurrentDirectory(),
   )
 
   lastService = Object.assign(
     ts.createLanguageService(hostWithResModNameLit, registry),
     {
       getHost: () => hostWithResModNameLit,
-    }
+    },
   )
   const duration =
     Math.floor((performance.now() - start) * 1000) / 1000

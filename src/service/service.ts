@@ -23,7 +23,7 @@ import { load } from './load.js'
 
 export const serviceName = 'tsimp'
 export const daemonScript = fileURLToPath(
-  getUrl('./service/daemon.mjs')
+  getUrl('./service/daemon.mjs'),
 )
 
 const findTsFile = (url: string | URL) => {
@@ -31,10 +31,9 @@ const findTsFile = (url: string | URL) => {
     const fileName = fileURLToPath(url)
     const { ext } = parse(fileName)
     const equivs = equivalents(fileName)
-    const checks = isTSExt(ext)
-      ? []
-      : equivs?.length
-      ? equivs
+    const checks =
+      isTSExt(ext) ? []
+      : equivs?.length ? equivs
       : tsExts.map(tsExt => fileName + tsExt)
     checks.unshift(fileName)
     for (const tsFile of [fileName, ...checks]) {
@@ -63,14 +62,14 @@ export class DaemonServer extends SockDaemonServer<
     /* c8 ignore start */
     if (!sourceFile) {
       throw new Error(
-        'failed to resolve typescript source for ' + request.fileName
+        'failed to resolve typescript source for ' + request.fileName,
       )
     }
     /* c8 ignore stop */
     const { fileName, diagnostics } = load(
       sourceFile,
       request.diagMode !== 'ignore',
-      request.pretty
+      request.pretty,
     )
     return { fileName, diagnostics }
   }
@@ -78,9 +77,9 @@ export class DaemonServer extends SockDaemonServer<
   #handleResolve(request: ServiceResolveRequest): ResolveResult {
     const { url, parentURL } = request
     const target =
-      url.startsWith('./') || url.startsWith('../')
-        ? String(new URL(url, parentURL))
-        : url
+      url.startsWith('./') || url.startsWith('../') ?
+        String(new URL(url, parentURL))
+      : url
     const tsFile = findTsFile(target)
     if (tsFile) {
       const url = new URL(target)
@@ -99,7 +98,7 @@ export class DaemonServer extends SockDaemonServer<
     request:
       | ServiceCompileRequest
       | ServiceResolveRequest
-      | ServicePreloadRequest
+      | ServicePreloadRequest,
   ) {
     switch (request.action) {
       case 'compile':

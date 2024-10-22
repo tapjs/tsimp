@@ -6,5 +6,5 @@ const { requireCommonJSLoad } = r
 const req = createRequire(import.meta.url)
 t.equal(
   requireCommonJSLoad(),
-  req('../dist/commonjs/service/load.js')
+  req('../dist/commonjs/service/load.js'),
 )

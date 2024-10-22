@@ -34,7 +34,7 @@ t.test('basic loading', async t => {
   process.chdir(resolve(dir, 'dir/sub'))
 
   const { tsconfig } = (await t.mockImport(
-    '../../dist/esm/service/tsconfig.js'
+    '../../dist/esm/service/tsconfig.js',
   )) as typeof import('../../dist/esm/service/tsconfig.js')
   const first = tsconfig()
   const second = tsconfig()
@@ -67,7 +67,7 @@ t.test('exit in error if tsconfig not found', async t => {
         warn: (...args: any[]) => warns.push(args),
         error: (...args: any[]) => errs.push(args),
       },
-    }
+    },
   )) as typeof import('../../dist/esm/service/tsconfig.js')
   const res = tsconfig()
   t.matchSnapshot({ warns, errs })

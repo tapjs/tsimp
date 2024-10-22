@@ -6,7 +6,7 @@ export const getDiagMode = (): DiagMode => {
   if (!isDiagMode(d))
     throw new Error(
       `Invalid TSIMP_DIAG environment variable: ${d}. Must be one of: ` +
-        `'ignore', 'warn', or 'error'`
+        `'ignore', 'warn', or 'error'`,
     )
   return d
 }

@@ -17,9 +17,9 @@ for (const tsconfigModule of ['commonjs', 'esnext', 'nodenext']) {
                 compilerOptions: {
                   module: tsconfigModule,
                   moduleResolution:
-                    tsconfigModule === 'nodenext'
-                      ? 'nodenext'
-                      : 'node10',
+                    tsconfigModule === 'nodenext' ? 'nodenext' : (
+                      'node10'
+                    ),
                 },
               }),
               'file.ts': `
@@ -51,7 +51,7 @@ for (const tsconfigModule of ['commonjs', 'esnext', 'nodenext']) {
             const { load, loadTypeCheck, loadTranspileOnly } =
               (await t.mockImport('../../src/service/load.js', {
                 '../../src/service/tsconfig.js': await t.mockImport(
-                  '../../src/service/tsconfig.js'
+                  '../../src/service/tsconfig.js',
                 ),
               })) as typeof import('../../src/service/load.js')
             for (const file of [
@@ -64,7 +64,7 @@ for (const tsconfigModule of ['commonjs', 'esnext', 'nodenext']) {
               t.test(file, async t => {
                 const { fileName, diagnostics } = load(
                   `${dir}/${file}`,
-                  typeCheck
+                  typeCheck,
                 )
                 t.matchSnapshot(
                   fileName &&
@@ -73,22 +73,23 @@ for (const tsconfigModule of ['commonjs', 'esnext', 'nodenext']) {
                         .toString()
                         .replace(
                           /# sourceMappingURL=.*/,
-                          '# sourceMappingURL='
-                        )
+                          '# sourceMappingURL=',
+                        ),
                     ),
-                  'compiled'
+                  'compiled',
                 )
                 t.matchSnapshot(diagnostics, 'diagnostics')
               })
             }
             // cached if called again
             const { fileName } = (
-              typeCheck ? loadTypeCheck : loadTranspileOnly
-            )(`${dir}/mixed.ts`)
+              typeCheck ? loadTypeCheck : loadTranspileOnly)(
+              `${dir}/mixed.ts`,
+            )
             t.equal(
               load(`${dir}/mixed.ts`, typeCheck).fileName,
               fileName,
-              'second compilation is cached'
+              'second compilation is cached',
             )
             // calling again with new config re-loads caches
             writeFileSync(
@@ -97,13 +98,13 @@ for (const tsconfigModule of ['commonjs', 'esnext', 'nodenext']) {
                 compilerOptions: {
                   verbatimModuleSyntax: true,
                 },
-              })
+              }),
             )
             utimesSync(`${dir}/tsconfig.json`, new Date(), new Date())
             t.equal(
               load(`${dir}/mixed.ts`, typeCheck).fileName,
               fileName,
-              'load after config change not cached, but still same output'
+              'load after config change not cached, but still same output',
             )
             t.test('chdir', async () => process.chdir(cwd))
           })

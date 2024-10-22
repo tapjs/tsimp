@@ -16,10 +16,10 @@ import { tsconfig } from './tsconfig.js'
 export type NodeModuleEmitKind = 'nodeesm' | 'nodecjs'
 
 const createTranspileOnlyGetOutputFunction = (
-  nodeModuleEmitKind?: NodeModuleEmitKind
+  nodeModuleEmitKind?: NodeModuleEmitKind,
 ): ((
   code: string,
-  fileName: string
+  fileName: string,
 ) => {
   outputText: string | undefined
   diagnostics: ts.Diagnostic[]
@@ -38,11 +38,9 @@ const createTranspileOnlyGetOutputFunction = (
       {
         fileName,
       },
-      nodeModuleEmitKind === 'nodeesm'
-        ? 'module'
-        : nodeModuleEmitKind === 'nodecjs'
-        ? 'commonjs'
-        : undefined
+      nodeModuleEmitKind === 'nodeesm' ? 'module'
+      : nodeModuleEmitKind === 'nodecjs' ? 'commonjs'
+      : undefined,
     )
 
     return { outputText, diagnostics: [] }
@@ -90,10 +88,10 @@ const createTsTranspileModule = ({
   // Create a compilerHost object to allow the compiler to read and write files
   const compilerHost: ts.CompilerHost = {
     getSourceFile: fileName =>
-      fileName === normalizePath(inputFileName)
-        ? sourceFile
-        : /* c8 ignore start */
-          undefined,
+      /* c8 ignore start */
+      fileName === normalizePath(inputFileName) ? sourceFile : (
+        undefined
+      ),
     /* c8 ignore stop */
     // we only write exactly one file, the output text
     writeFile: (_, text) => {
@@ -109,10 +107,9 @@ const createTsTranspileModule = ({
       relative(fileName, inputFileName) === '' ||
       relative(fileName, packageJsonFileName) === '',
     readFile: fileName =>
-      relative(fileName, packageJsonFileName) === ''
-        ? `{"type": "${packageJsonType}"}`
-        : /* c8 ignore start */
-          '',
+      relative(fileName, packageJsonFileName) === '' ?
+        `{"type": "${packageJsonType}"}`
+      : /* c8 ignore start */ '',
     /* c8 ignore stop */
     directoryExists: () => true,
     getDirectories: () => [],
@@ -121,7 +118,7 @@ const createTsTranspileModule = ({
   const transpileModule = (
     input: string,
     transpileOptions2: ts.TranspileOptions,
-    pjType?: 'module' | 'commonjs'
+    pjType?: 'module' | 'commonjs',
   ): {
     outputText: string | undefined
     diagnostics: ts.Diagnostic[]
@@ -154,11 +151,11 @@ const createTsTranspileModule = ({
         (ts as any).toPath(
           inputFileName,
           '',
-          compilerHost.getCanonicalFileName
+          compilerHost.getCanonicalFileName,
         ),
         /*cache*/ undefined,
         compilerHost,
-        options
+        options,
       ),
       setExternalModuleIndicator: (
         ts as any
@@ -171,7 +168,7 @@ const createTsTranspileModule = ({
     const program = ts.createProgram(
       [inputFileName],
       options,
-      compilerHost
+      compilerHost,
     )
 
     // Emit

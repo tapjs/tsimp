@@ -5,7 +5,7 @@ import t from 'tap'
 import { fileURLToPath, pathToFileURL } from 'url'
 
 const bin = fileURLToPath(
-  new URL('../dist/esm/bin.mjs', import.meta.url)
+  new URL('../dist/esm/bin.mjs', import.meta.url),
 )
 
 const run = (args: string[]) =>
@@ -23,7 +23,10 @@ t.test('help', async t => {
 t.test('stop', async t => {
   run(['--stop'])
   t.throws(() =>
-    process.kill(Number(readFileSync('.tsimp/daemon/pid')), 'SIGTERM')
+    process.kill(
+      Number(readFileSync('.tsimp/daemon/pid')),
+      'SIGTERM',
+    ),
   )
 })
 
@@ -50,7 +53,7 @@ t.test('ping', async t => {
   const { stdout: log } = run(['--log'])
   t.equal(
     log,
-    readFileSync('.tsimp/daemon/log', 'utf8').trimEnd() + '\n'
+    readFileSync('.tsimp/daemon/log', 'utf8').trimEnd() + '\n',
   )
 })
 
@@ -74,11 +77,11 @@ t.test('actually run a program', async t => {
       ])
       t.equal(
         stdout,
-        String(pathToFileURL(resolve(dir, 'file.ts'))) + '\n'
+        String(pathToFileURL(resolve(dir, 'file.ts'))) + '\n',
       )
       t.equal(
         stderr.replace(/\\/g, '/'),
-        `import('./${rel}/file.ts') from cwd\n`
+        `import('./${rel}/file.ts') from cwd\n`,
       )
     }
     {
@@ -89,20 +92,20 @@ t.test('actually run a program', async t => {
       ])
       t.equal(
         stdout,
-        String(pathToFileURL(resolve(dir, 'file.ts'))) + '\n'
+        String(pathToFileURL(resolve(dir, 'file.ts'))) + '\n',
       )
       t.equal(
         stderr.replace(/\\/g, '/'),
         `import('./file.ts') from ${pathToFileURL(
-          resolve(dir, 'foo.js')
-        )}\n`
+          resolve(dir, 'foo.js'),
+        )}\n`,
       )
     }
     {
       const { stdout, stderr } = run(['--resolve', 'chalk'])
       t.strictSame(
         { stdout, stderr },
-        { stdout: 'chalk\n', stderr: `import('chalk')\n` }
+        { stdout: 'chalk\n', stderr: `import('chalk')\n` },
       )
     }
   })
@@ -110,7 +113,7 @@ t.test('actually run a program', async t => {
     t.equal(run(['--compile']).status, 1, 'file is required')
     const { stdout } = run(['--compile', `./${rel}/file.ts`])
     t.matchSnapshot(
-      stdout.replace(/# sourceMappingURL=.*/, '# sourceMappingURL=')
+      stdout.replace(/# sourceMappingURL=.*/, '# sourceMappingURL='),
     )
   })
   t.test('compile with diags', async t => {

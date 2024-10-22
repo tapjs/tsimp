@@ -8,7 +8,7 @@ t.test('case sensitive', async t => {
           useCaseSensitiveFileNames: true,
         },
       },
-    }
+    },
   )) as typeof import('../../dist/esm/service/get-canonical-filename.js')
   t.equal(gcfn('/hElLo/wOrLd'), '/hElLo/wOrLd')
 })
@@ -22,7 +22,7 @@ t.test('not case sensitive', async t => {
           useCaseSensitiveFileNames: false,
         },
       },
-    }
+    },
   )) as typeof import('../../dist/esm/service/get-canonical-filename.js')
 
   t.equal(gcfn('/hElLo/wOrLd'), '/hello/world')

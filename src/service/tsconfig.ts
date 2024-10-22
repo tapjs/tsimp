@@ -85,7 +85,7 @@ export const tsconfig = () => {
           jsx: ts.JsxEmit.Preserve,
         },
       },
-      tsimp ? applyOverrides(config, tsimp) : config
+      tsimp ? applyOverrides(config, tsimp) : config,
     )
     const res = applyOverrides(configWithDefaults, {
       compilerOptions: {
@@ -97,7 +97,7 @@ export const tsconfig = () => {
         sourceMap: undefined,
         sourceRoot: resolve(
           dir,
-          configWithDefaults.compilerOptions.rootDir
+          configWithDefaults.compilerOptions.rootDir,
         ),
         inlineSourceMap: true,
         inlineSources: false,
@@ -117,7 +117,7 @@ export const tsconfig = () => {
     return (loadedConfig = newConfig)
   }
   error(
-    `could not find config file named "${filename}", searching from "${cwd}"`
+    `could not find config file named "${filename}", searching from "${cwd}"`,
   )
   process.exit(1)
 }
@@ -141,7 +141,7 @@ const applyOverrides = (config: any, overrides?: any): any => {
           k,
           k in overrides ? applyOverrides(v, overrides[k]) : v,
         ])
-        .filter(([_, v]) => v !== undefined)
+        .filter(([_, v]) => v !== undefined),
     ),
   }
 }

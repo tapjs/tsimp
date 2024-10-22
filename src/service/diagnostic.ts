@@ -9,7 +9,7 @@ const cwd = process.cwd()
 // anyway.
 export const reportAll = (
   diagnostics: Diagnostic[],
-  pretty?: boolean
+  pretty?: boolean,
 ) =>
   diagnostics.filter(d => d.code !== 6059).map(d => report(d, pretty))
 
@@ -21,8 +21,8 @@ const host = {
 
 export const report = (
   diagnostic: Diagnostic,
-  pretty = !!process.stderr.isTTY
+  pretty = !!process.stderr.isTTY,
 ): string =>
-  pretty
-    ? ts.formatDiagnosticsWithColorAndContext([diagnostic], host)
-    : ts.formatDiagnostic(diagnostic, host)
+  pretty ?
+    ts.formatDiagnosticsWithColorAndContext([diagnostic], host)
+  : ts.formatDiagnostic(diagnostic, host)

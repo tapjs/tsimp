@@ -7,6 +7,6 @@ const { getUrl: getUrlSrc } = h
 
 t.equal(
   getUrlDist('x'),
-  String(new URL('../dist/esm/x', import.meta.url))
+  String(new URL('../dist/esm/x', import.meta.url)),
 )
 t.equal(getUrlSrc('x'), String(new URL('../src/x', import.meta.url)))

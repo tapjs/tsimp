@@ -25,7 +25,7 @@ let didMkdirp = false
 export const load = (
   fileName: string,
   typeCheck = true,
-  pretty = true
+  pretty = true,
 ): CompileResult => {
   fileName = resolve(fileName)
   const config = tsconfig()

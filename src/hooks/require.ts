@@ -72,7 +72,7 @@ if (typeof Module.register !== 'function') {
       }
       return (file ? readFile(file) : code) || code
     },
-    { exts: ['.ts', '.cts'], ignoreNodeModules: true }
+    { exts: ['.ts', '.cts'], ignoreNodeModules: true },
   )
 }
 /* c8 ignore stop */

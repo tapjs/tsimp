@@ -17,28 +17,28 @@ export const normalizeSlashes = (path: string): string =>
   path.includes('\\') ? path.replace(/\\/g, '/') : path
 
 export const readFile = cachedMtime(
-  catchWrap((p: string) => readFileSync(p, 'utf8'), undefined)
+  catchWrap((p: string) => readFileSync(p, 'utf8'), undefined),
 )
 
 const safeStat = catchWrap(statSync)
 export const directoryExists = cached(
-  (p: string) => !!safeStat(p)?.isDirectory()
+  (p: string) => !!safeStat(p)?.isDirectory(),
 )
 export const fileExists = cached(
-  (p: string) => !!safeStat(p)?.isFile()
+  (p: string) => !!safeStat(p)?.isFile(),
 )
 
 export const realpath = cachedMtime((path: string) =>
-  catcher(() => realpathSync(path, 'utf8'), path)
+  catcher(() => realpathSync(path, 'utf8'), path),
 )
 
 export const getCurrentDirectory = () => cwd
 
 /* c8 ignore start */
 const pathHasTrailingSlash =
-  sep === '/'
-    ? (p: string) => p.endsWith('/')
-    : (p: string) => p.endsWith('/') || p.endsWith(sep)
+  sep === '/' ?
+    (p: string) => p.endsWith('/')
+  : (p: string) => p.endsWith('/') || p.endsWith(sep)
 /* c8 ignore stop */
 
 export const normalizePath = cached((path: string): string => {
@@ -55,7 +55,7 @@ export const normalizePath = cached((path: string): string => {
   if (sep === '\\') {
     // capitalize drive letters and UNC host/share names.
     path = path.replace(/^([a-z]:\/|\/\/[^\/]+\/[^\/]+)/, $ =>
-      $.toUpperCase()
+      $.toUpperCase(),
     )
   }
   return path
@@ -92,7 +92,7 @@ const getFileSystemEntries = cachedMtime(
     files.sort((a, b) => a.localeCompare(b, 'en'))
     directories.sort((a, b) => a.localeCompare(b, 'en'))
     return { files, directories }
-  }, emptyFileSystemEntries)
+  }, emptyFileSystemEntries),
 )
 
 export const getDirectories = (path: string) =>

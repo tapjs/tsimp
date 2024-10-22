@@ -16,14 +16,14 @@ export const fileContents = new Map<string, string>()
 
 let projectVersionNum = 0
 export const fileVersions = new Map<string, number>(
-  [...rootFileNames()].map(fileName => [fileName, 0])
+  [...rootFileNames()].map(fileName => [fileName, 0]),
 )
 export const projectVersion = () => String(projectVersionNum)
 export const incProjectVersion = () => String(++projectVersionNum)
 
 export const updateFileVersion = (
   fileName: string,
-  contents: string
+  contents: string,
 ) => {
   const previousVersion = fileVersions.get(fileName) ?? 0
   const previousContents = fileContents.get(fileName)

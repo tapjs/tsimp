@@ -43,7 +43,7 @@
   },
   "scripts": {
     "prepare": "tshy",
-    "format": "prettier --write . --loglevel warn --cache",
+    "format": "prettier --write . --log-level warn --cache",
     "pretest": "npm run prepare",
     "presnap": "npm run prepare",
     "snap": "tap",
@@ -58,19 +58,19 @@
     "foreground-child": "^3.1.1",
     "mkdirp": "^3.0.1",
     "pirates": "^4.0.6",
-    "rimraf": "^5.0.5",
+    "rimraf": "^6.0.1",
     "signal-exit": "^4.1.0",
     "sock-daemon": "^1.4.2",
-    "walk-up-path": "^3.0.1"
+    "walk-up-path": "^4.0.0"
   },
   "peerDependencies": {
     "typescript": "^5.1.0"
   },
   "devDependencies": {
     "@swc-node/register": "^1.10.9",
-    "@types/node": "^20.8.4",
+    "@types/node": "^22.7.8",
     "chalk": "^5.3.0",
-    "prettier": "^2.8.8",
+    "prettier": "^3.3.3",
     "swc": "^1.0.11",
     "tap": "^21.0.1",
     "ts-node": "^10.9.1",
@@ -80,6 +80,7 @@
     "typescript": "^5.6.3"
   },
   "prettier": {
+    "experimentalTernaries": true,
     "semi": false,
     "printWidth": 70,
     "tabWidth": 2,

@@ -52,20 +52,20 @@ export const initialize: InitializeHook = ({
 export const resolve: ResolveHook = async (
   url,
   context,
-  nextResolve
+  nextResolve,
 ) => {
   const { parentURL } = context
   const target =
     /* c8 ignore start */
-    parentURL && (url.startsWith('./') || url.startsWith('../'))
-      ? /* c8 ignore stop */
-        String(new URL(url, parentURL))
-      : url
+    parentURL && (url.startsWith('./') || url.startsWith('../')) ?
+      /* c8 ignore stop */
+      String(new URL(url, parentURL))
+    : url
   return nextResolve(
-    target.startsWith('file://') && !startsWithCS(target, nm)
-      ? await getClient().resolve(url, parentURL)
-      : url,
-    context
+    target.startsWith('file://') && !startsWithCS(target, nm) ?
+      await getClient().resolve(url, parentURL)
+    : url,
+    context,
   )
 }
 
@@ -73,8 +73,9 @@ export const resolve: ResolveHook = async (
 const cs =
   process.platform !== 'win32' && process.platform !== 'darwin'
 /* c8 ignore start */
-const startsWithCS = cs
-  ? (haystack: string, needle: string) => haystack.startsWith(needle)
+const startsWithCS =
+  cs ?
+    (haystack: string, needle: string) => haystack.startsWith(needle)
   : (haystack: string, needle: string) =>
       haystack.toUpperCase().startsWith(needle.toUpperCase())
 /* c8 ignore stop */
@@ -90,7 +91,7 @@ export const load: LoadHook = async (url, context, nextLoad) => {
     const { fileName, diagnostics } = await getClient().compile(
       inputFile,
       diagMode,
-      pretty
+      pretty,
     )
     for (const d of diagnostics) consoleError(d)
     if (!fileName) {

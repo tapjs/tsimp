@@ -46,7 +46,7 @@ for (const tsconfigModule of ['commonjs', 'esnext', 'nodenext']) {
         const dir = t.testdir(fixture)
         process.chdir(dir)
         const { getOutputTypeCheck } = (await t.mockImport(
-          '../../src/service/get-output-typecheck.js'
+          '../../src/service/get-output-typecheck.js',
         )) as typeof import('../../src/service/get-output-typecheck.js')
 
         for (const file of [
@@ -58,12 +58,12 @@ for (const tsconfigModule of ['commonjs', 'esnext', 'nodenext']) {
         ] as const) {
           t.test(file, async t => {
             const content =
-              file === 'mix/mixed.ts'
-                ? fixture.mix['mixed.ts']
-                : fixture[file]
+              file === 'mix/mixed.ts' ?
+                fixture.mix['mixed.ts']
+              : fixture[file]
             const { outputText, diagnostics } = getOutputTypeCheck(
               content,
-              `${dir}/${file}`
+              `${dir}/${file}`,
             )
             const d = diagnostics
               .filter(d => d.code !== 6059)
@@ -72,21 +72,21 @@ for (const tsconfigModule of ['commonjs', 'esnext', 'nodenext']) {
                   [
                     d.file && basename(d.file.fileName),
                     d.code,
-                    typeof d.messageText === 'object'
-                      ? d.messageText.messageText
-                      : d.messageText,
-                  ] as [string, number, string]
+                    typeof d.messageText === 'object' ?
+                      d.messageText.messageText
+                    : d.messageText,
+                  ] as [string, number, string],
               )
               .sort(
                 ([a, aa], [b, bb]) =>
-                  a.localeCompare(b, 'en') || aa - bb
+                  a.localeCompare(b, 'en') || aa - bb,
               )
             t.matchSnapshot(
               outputText?.replace(
                 /# sourceMappingURL=.*/,
-                '# sourceMappingURL='
+                '# sourceMappingURL=',
               ),
-              'compiled'
+              'compiled',
             )
             t.matchSnapshot(d, 'diagnostics')
           })

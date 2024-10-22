@@ -15,7 +15,7 @@ import {
 
 export const serviceName = 'tsimp' as const
 export const daemonScript = fileURLToPath(
-  getUrl('./service/daemon.mjs')
+  getUrl('./service/daemon.mjs'),
 )
 
 /**
@@ -65,7 +65,7 @@ export class DaemonClient extends SockDaemonClient<
   async compile(
     inputFile: string,
     diagMode: DiagMode = getDiagMode(),
-    pretty: boolean = !!process.stderr.isTTY
+    pretty: boolean = !!process.stderr.isTTY,
   ): Promise<CompileResult> {
     inputFile = resolve(inputFile)
     const { fileName, diagnostics } = (await this.request({

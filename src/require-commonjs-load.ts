@@ -12,7 +12,7 @@ const req = createRequire(import.meta.url)
 
 export const requireCommonJSLoad = () =>
   req(
-    inDist
-      ? resolve(__dirname, '../commonjs/service/load.js')
-      : resolve(__dirname, '../dist/commonjs/service/load.js')
+    inDist ?
+      resolve(__dirname, '../commonjs/service/load.js')
+    : resolve(__dirname, '../dist/commonjs/service/load.js'),
   ) as typeof import('./service/load.js')

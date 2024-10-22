@@ -10,7 +10,7 @@ import { markFileNameInternal } from './resolve-module-name-literals.js'
 const cwd = process.cwd()
 export const getOutputTypeCheck = (
   code: string,
-  fileName: string
+  fileName: string,
 ): {
   outputText: string | undefined
   diagnostics: ts.Diagnostic[]
@@ -68,7 +68,7 @@ export const getOutputTypeCheck = (
         `Unable to require file: ${relative(cwd, fileName)}\n` +
           'This is usually the result of a faulty configuration or import. ' +
           'Make sure there is a `.js`, `.json` or other executable ' +
-          'extension with loader attached before `tsimp` available.'
+          'extension with loader attached before `tsimp` available.',
       )
     }
     /* c8 ignore stop */

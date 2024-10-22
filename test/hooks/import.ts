@@ -13,8 +13,8 @@ await t.mockImport('../../dist/esm/hooks/import.mjs', {
       t.equal(
         fileURLToPath(options.parentURL).toLowerCase(),
         fileURLToPath(
-          new URL('../../dist/esm/hooks/import.mjs', import.meta.url)
-        ).toLowerCase()
+          new URL('../../dist/esm/hooks/import.mjs', import.meta.url),
+        ).toLowerCase(),
       )
       const { port } = options.data
       t.type(port, MessagePort)

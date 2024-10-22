@@ -16,7 +16,7 @@ const __filename = fileURLToPath(import.meta.url)
 t.equal(languageService.getHost().fileExists(__filename), true)
 t.equal(
   languageService.getHost().fileExists(__filename + 'asdfasdf'),
-  false
+  false,
 )
 const content = readFileSync(__filename, 'utf8')
 t.equal(
@@ -24,13 +24,13 @@ t.equal(
     .getHost()
     .getScriptSnapshot(__filename)
     ?.getText(0, content.length),
-  content
+  content,
 )
 t.equal(
   languageService
     .getHost()
     .getScriptSnapshot(__filename + 'asdfasdf'),
-  undefined
+  undefined,
 )
 
 const cwd = process.cwd()
@@ -45,7 +45,7 @@ t.test('change config reloads service', async t => {
   process.chdir(dir)
 
   const { tsconfig } = (await t.mockImport(
-    '../../src/service/tsconfig.js'
+    '../../src/service/tsconfig.js',
   )) as typeof import('../../src/service/tsconfig.js')
 
   let tscfg = tsconfig()
@@ -63,20 +63,20 @@ t.test('change config reloads service', async t => {
         error: (msg: string) => ERROR.push(msg),
         trace: () => {},
       },
-    }
+    },
   )
   const svc = getLanguageService()
   const host = svc.getHost()
   t.type(host.trace, 'function')
   t.equal(
     host.getCompilationSettings().moduleResolution,
-    ts.ModuleResolutionKind.NodeNext
+    ts.ModuleResolutionKind.NodeNext,
   )
   t.equal(host.getNewLine(), '\n')
   t.match(host.getScriptFileNames(), Array)
   t.match(
     host.getScriptVersion(host.getScriptFileNames()),
-    String(undefined)
+    String(undefined),
   )
   INFO.length = 0
   host.log('info')
@@ -86,7 +86,7 @@ t.test('change config reloads service', async t => {
   t.strictSame(ERROR, ['error'])
   t.equal(
     basename(host.getDefaultLibFileName(tscfg.options)),
-    'lib.es2022.full.d.ts'
+    'lib.es2022.full.d.ts',
   )
   tscfg = rootTsconfig
 

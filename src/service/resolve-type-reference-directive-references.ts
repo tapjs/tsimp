@@ -12,7 +12,7 @@ const rtrdrInternalCache = new Map<
 
 export const getResolveTypeReferenceDirectiveReferences = (
   host: ts.LanguageServiceHost,
-  moduleResolutionCache: ts.ModuleResolutionCache
+  moduleResolutionCache: ts.ModuleResolutionCache,
 ) => {
   const config = tsconfig()
   const typeReferenceDirectiveResolutionCache =
@@ -20,7 +20,7 @@ export const getResolveTypeReferenceDirectiveReferences = (
       getCurrentDirectory(),
       getCanonicalFileName,
       config.options,
-      moduleResolutionCache.getPackageJsonInfoCache()
+      moduleResolutionCache.getPackageJsonInfoCache(),
     )
 
   const resolveTypeReferenceDirectiveReferences = (
@@ -29,7 +29,7 @@ export const getResolveTypeReferenceDirectiveReferences = (
     redirectedReference: ts.ResolvedProjectReference | undefined,
     options: ts.CompilerOptions,
     containingSourceFile: ts.SourceFile | string | undefined,
-    _reusedNames?: (ts.FileReference | string)[]
+    _reusedNames?: (ts.FileReference | string)[],
   ): readonly ts.ResolvedTypeReferenceDirectiveWithFailedLookupLocations[] => {
     const entries = typeDirectiveReferences
     const resolutionCache = typeReferenceDirectiveResolutionCache
@@ -39,7 +39,7 @@ export const getResolveTypeReferenceDirectiveReferences = (
       redirectedReference: ts.ResolvedProjectReference | undefined,
       options: ts.CompilerOptions,
       host: ts.ModuleResolutionHost,
-      resolutionCache: ts.TypeReferenceDirectiveResolutionCache
+      resolutionCache: ts.TypeReferenceDirectiveResolutionCache,
     ) => any
 
     /* c8 ignore start */
@@ -52,21 +52,21 @@ export const getResolveTypeReferenceDirectiveReferences = (
       redirectedReference,
       options,
       host,
-      resolutionCache
+      resolutionCache,
     )
     for (const entry of entries) {
       const name = loader.nameAndMode.getName(entry)
       const mode = loader.nameAndMode.getMode(
         entry,
         containingSourceFile,
-        options
+        options,
       )
       const key = createModeAwareCacheKey(name, mode)
       let result = rtrdrInternalCache.get(key)
       if (!result) {
         rtrdrInternalCache.set(
           key,
-          (result = loader.resolve(name, mode))
+          (result = loader.resolve(name, mode)),
         )
       }
       resolutions.push(result)

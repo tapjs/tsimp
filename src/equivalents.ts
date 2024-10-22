@@ -41,7 +41,7 @@ export const isExt = (e: any): e is TSExt | JSExt =>
 
 export const equivalents = (
   path: string,
-  extensionless = false
+  extensionless = false,
 ): string[] => {
   const { ext } = parse(path)
   const stem = path.substring(0, path.length - ext.length)

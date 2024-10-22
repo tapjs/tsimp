@@ -17,9 +17,9 @@ for (const tsconfigModule of ['commonjs', 'esnext', 'nodenext']) {
                   jsx: verbatimModuleSyntax ? 'preserve' : undefined,
                   module: tsconfigModule,
                   moduleResolution:
-                    tsconfigModule === 'nodenext'
-                      ? 'nodenext'
-                      : 'node10',
+                    tsconfigModule === 'nodenext' ? 'nodenext' : (
+                      'node10'
+                    ),
                 },
               }),
               'file.ts': `
@@ -55,7 +55,7 @@ for (const tsconfigModule of ['commonjs', 'esnext', 'nodenext']) {
               getOutputForceESM,
               getOutputForceCommonJS,
             } = (await t.mockImport(
-              '../../src/service/transpile-only.js'
+              '../../src/service/transpile-only.js',
             )) as typeof import('../../src/service/transpile-only.js')
 
             for (const file of [
@@ -67,44 +67,44 @@ for (const tsconfigModule of ['commonjs', 'esnext', 'nodenext']) {
             ] as const) {
               t.test(file, async t => {
                 const content =
-                  file === 'mix/mixed.ts'
-                    ? fixture.mix['mixed.ts']
-                    : fixture[file]
+                  file === 'mix/mixed.ts' ?
+                    fixture.mix['mixed.ts']
+                  : fixture[file]
                 const noForce = getOutputTranspileOnly(
                   content,
-                  `${dir}/${file}`
+                  `${dir}/${file}`,
                 )
                 const forceCommonJS = getOutputForceCommonJS(
                   content,
-                  `${dir}/${file}`
+                  `${dir}/${file}`,
                 )
                 const forceESM = getOutputForceESM(
                   content,
-                  `${dir}/${file}`
+                  `${dir}/${file}`,
                 )
                 t.strictSame(noForce.diagnostics, [], 'no diags')
                 t.strictSame(
                   forceCommonJS.diagnostics,
                   [],
-                  'no diags commonjs'
+                  'no diags commonjs',
                 )
                 t.strictSame(forceESM.diagnostics, [], 'no diags esm')
                 t.matchSnapshot(
                   {
                     noForce: noForce.outputText?.replace(
                       /# sourceMappingURL=.*/,
-                      '# sourceMappingURL='
+                      '# sourceMappingURL=',
                     ),
                     forceCommonJS: forceCommonJS.outputText?.replace(
                       /# sourceMappingURL=.*/,
-                      '# sourceMappingURL='
+                      '# sourceMappingURL=',
                     ),
                     forceESM: forceESM.outputText?.replace(
                       /# sourceMappingURL=.*/,
-                      '# sourceMappingURL='
+                      '# sourceMappingURL=',
                     ),
                   },
-                  'outputs'
+                  'outputs',
                 )
               })
             }

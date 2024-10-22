@@ -16,21 +16,20 @@ import {
 export const compile = (
   code: string,
   fileName: string,
-  typeCheck = true
+  typeCheck = true,
 ) => {
   const normalizedFileName: string = normalizeSlashes(fileName)
   const classification = classifyModule(normalizedFileName)
-  const getOutput = typeCheck
-    ? getOutputTypeCheck
-    : getOutputTranspileOnly
+  const getOutput =
+    typeCheck ? getOutputTypeCheck : getOutputTranspileOnly
   const forceOutput =
-    classification === 'commonjs'
-      ? getOutputForceCommonJS
-      : getOutputForceESM
+    classification === 'commonjs' ?
+      getOutputForceCommonJS
+    : getOutputForceESM
 
   let { outputText, diagnostics } = getOutput(
     code,
-    normalizedFileName
+    normalizedFileName,
   )
 
   return {

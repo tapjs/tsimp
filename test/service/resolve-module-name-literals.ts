@@ -46,10 +46,10 @@ export const baz = 'baz'
   const cwd = process.cwd()
   process.chdir(dir)
   const { getLanguageService } = (await t.mockImport(
-    '../../src/service/language-service.js'
+    '../../src/service/language-service.js',
   )) as typeof import('../../src/service/language-service.js')
   const { markFileNameInternal } = (await t.mockImport(
-    '../../src/service/resolve-module-name-literals.js'
+    '../../src/service/resolve-module-name-literals.js',
   )) as typeof import('../../src/service/resolve-module-name-literals.js')
   const svc = getLanguageService()
   svc.getHost().resolveModuleNameLiterals
@@ -95,10 +95,10 @@ export const baz = 'baz'
   const cwd = process.cwd()
   process.chdir(dir)
   const { getLanguageService } = (await t.mockImport(
-    '../../src/service/language-service.js'
+    '../../src/service/language-service.js',
   )) as typeof import('../../src/service/language-service.js')
   const { markFileNameInternal } = (await t.mockImport(
-    '../../src/service/resolve-module-name-literals.js'
+    '../../src/service/resolve-module-name-literals.js',
   )) as typeof import('../../src/service/resolve-module-name-literals.js')
   const svc = getLanguageService()
   svc.getHost().resolveModuleNameLiterals

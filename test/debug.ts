@@ -35,7 +35,7 @@ for (const isTTY of [true, false]) {
           errs()
             .map(s => s.join(''))
             .join('\n'),
-          'output'
+          'output',
         )
       })
     }
