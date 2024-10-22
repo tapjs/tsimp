@@ -67,17 +67,17 @@
     "typescript": "^5.1.0"
   },
   "devDependencies": {
-    "@swc-node/register": "^1.6.8",
+    "@swc-node/register": "^1.10.9",
     "@types/node": "^20.8.4",
     "chalk": "^5.3.0",
     "prettier": "^2.8.8",
     "swc": "^1.0.11",
-    "tap": "^18.5.7",
+    "tap": "^21.0.1",
     "ts-node": "^10.9.1",
     "tshy": "^3.0.2",
     "tsx": "^4.1.2",
-    "typedoc": "^0.25.3",
-    "typescript": "^5.2.2"
+    "typedoc": "^0.26.10",
+    "typescript": "^5.6.3"
   },
   "prettier": {
     "semi": false,
