@@ -65,6 +65,33 @@ t.test('actually run a program', async t => {
       export const f: Foo = { bar: true, baz: 'xyz' }
       console.error(f)
     `,
+
+    // subpath import tests
+    'package.json': JSON.stringify({
+      "type": "module",
+      "imports": {
+        "#utilities/*": "./utilities/*"
+      }
+    }),
+    'tsconfig.json': JSON.stringify({
+      "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+          "#utilities/*": ["./utilities/*"],
+        }
+      },
+    }),
+
+    'utilities': {
+      'source': {
+        'constants.ts': 'enum Constants { one = "one", two = "two" }; export default Constants;'
+      }
+    },
+
+    "test": {
+      'getOne.ts': `import Constants from "../utilities/source/constants.js"; console.log(Constants.one);`,
+      'getTwo.ts': `import Constants from "#utilities/source/constants.js"; console.log(Constants.two);`
+    }
   })
   const rel = relative(process.cwd(), dir).replace(/\\/g, '/')
 
@@ -124,5 +151,21 @@ t.test('actually run a program', async t => {
     const { stdout, status } = run([`./${rel}/file.ts`])
     t.equal(status, 0)
     t.equal(stdout, 'ok\n')
+  })
+
+  t.test('run file with subpath imports', async t => {
+    {
+      const pathToFile = `./${rel}/test/getOne.ts`
+      const { stdout, status } = run([pathToFile])
+      t.equal(status, 0)
+      t.equal(stdout, 'one\n')
+    }
+
+    {
+      const pathToFile = `./${rel}/test/getTwo.ts`
+      const { stdout, status } = run([pathToFile])
+      t.equal(status, 0)
+      t.equal(stdout, 'two\n')
+    }
   })
 })
